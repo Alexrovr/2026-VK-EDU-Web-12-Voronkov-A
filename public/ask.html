@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q&A – Задать вопрос</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="icon" href="static/img/favicon.ico">
+</head>
+<body>
+    <header></header>
+    <main class="main">
+        <div class="container main-container">
+            <div class="content">
+                <div class="form-container">
+                    <h2>Задать новый вопрос</h2>
+                    <form action="#" method="post">
+                        <div class="form-group">
+                            <label for="title">Заголовок</label>
+                            <input type="text" class="form-control" id="title" name="title" placeholder="Кратко опишите суть вопроса" maxlength="255">
+                            <small class="form-text">Максимум 255 символов</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="text">Текст вопроса</label>
+                            <textarea class="form-control" id="text" name="text" rows="6" placeholder="Подробно опишите проблему..."></textarea>
+                            <small class="form-text">Постарайтесь изложить суть ясно и полно.</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="tags">Теги</label>
+                            <input type="text" class="form-control" id="tags" name="tags" placeholder="python, django, ..." maxlength="200">
+                            <small class="form-text">Введите теги через запятую.</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Опубликовать</button>
+                    </form>
+                </div>
+            </div>
+            <aside class="sidebar"></aside>
+        </div>
+    </main>
+    <footer></footer>
+</body>
+</html>

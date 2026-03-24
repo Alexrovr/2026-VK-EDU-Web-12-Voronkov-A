@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q&A – Профиль</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="icon" href="static/img/favicon.ico">
+</head>
+<body>
+    <header></header>
+    <main class="main">
+        <div class="container main-container">
+            <div class="content">
+                <div class="form-container">
+                    <h2>Редактирование профиля</h2>
+                    <form action="#" method="post" enctype="multipart/form-data">
+                        <div class="form-group text-center">
+                            <img src="static/img/default-avatar.png" alt="Avatar" class="avatar-large">
+                            <input type="file" name="avatar" accept="image/*" class="form-control-file mt-2">
+                        </div>
+                        <div class="form-group">
+                            <label for="username">Имя пользователя</label>
+                            <input type="text" class="form-control" id="username" name="username" value="user123">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" value="user@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Новый пароль</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Оставьте пустым, чтобы не менять">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
+                    </form>
+                </div>
+            </div>
+            <aside class="sidebar"></aside>
+        </div>
+    </main>
+    <footer></footer>
+</body>
+</html>

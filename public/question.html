@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q&A – Вопрос</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="icon" href="static/img/favicon.ico">
+</head>
+<body>
+    <header class="header"></header>
+    <main class="main">
+        <div class="container main-container">
+            <div class="content">
+                <article class="question-card">
+                    <div class="vote">
+                        <button class="vote-up">▲</button>
+                        <span class="vote-count">10</span>
+                        <button class="vote-down">▼</button>
+                    </div>
+                    <div class="question-main">
+                        <h1 class="question-title">Как правильно задавать вопросы на форуме?</h1>
+                        <div class="question-text">
+                            Полное описание вопроса... Здесь может быть длинный текст.
+                        </div>
+                        <div class="question-meta">
+                            <div class="tags">
+                                <a href="#">python</a>
+                                <a href="#">django</a>
+                            </div>
+                            <div class="info">
+                                <span>Автор: <a href="#">user123</a></span>
+                                <span>20 марта 2026</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <h2>Ответы (3)</h2>
+                <div class="answers-list">
+                    <div class="answer-card">
+                        <div class="vote">
+                            <button class="vote-up">▲</button>
+                            <span class="vote-count">2</span>
+                            <button class="vote-down">▼</button>
+                        </div>
+                        <div class="answer-main">
+                            <div class="answer-text">
+                                Вопрос должен быть конкретным, с примерами кода...
+                            </div>
+                            <div class="answer-meta">
+                                <span>Автор: <a href="#">helper</a></span>
+                                <span>21 марта 2026</span>
+                                <label class="correct-answer">
+                                    <input type="checkbox"> Правильный ответ
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pagination">
+                    <a href="#" class="page-link prev">←</a>
+                    <a href="#" class="page-link active">1</a>
+                    <a href="#" class="page-link">2</a>
+                    <a href="#" class="page-link next">→</a>
+                </div>
+
+                <div class="answer-form">
+                    <h3>Ваш ответ</h3>
+                    <form action="#" method="post">
+                        <textarea name="answer" rows="5" placeholder="Напишите ответ..."></textarea>
+                        <button type="submit" class="btn">Ответить</button>
+                    </form>
+                </div>
+            </div>
+            <aside class="sidebar"></aside>
+        </div>
+    </main>
+    <footer class="footer"></footer>
+</body>
+</html>
