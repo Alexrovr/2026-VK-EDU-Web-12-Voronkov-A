@@ -7,7 +7,25 @@
     <link rel="stylesheet" href="static/css/style.css">
 </head>
 <body>
-    <header class="header"></header>
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo" >Главная страница</a>
+            <div class="search">
+                <form action="#" method="get">
+                    <input type="text" name="q" placeholder="Поиск...">
+                    <button type="submit">Найти</button>
+                </form>
+            </div>
+            <div class="ask-btn">
+                <a href="ask.html" class="btn">Задать вопрос</a>
+            </div>
+            <div class="user-block">
+                <div class="unauth">
+                    <a href="login.html">Вход</a> / <a href="signup.html">Регистрация</a>
+                </div>
+            </div>
+        </div>
+    </header>
     <main class="main">
         <div class="container main-container">
             <div class="content">
@@ -73,9 +91,33 @@
                     </form>
                 </div>
             </div>
-            <aside class="sidebar"></aside>
+            <aside class="sidebar">
+                <div class="sidebar-block">
+                    <h3>Популярные теги</h3>
+                    <ul class="tags">
+                        <li><a href="tag.html">python</a></li>
+                        <li><a href="tag.html">django</a></li>
+                        <li><a href="tag.html">javascript</a></li>
+                        <li><a href="tag.html">html</a></li>
+                        <li><a href="tag.html">css</a></li>
+                    </ul>
+                </div>
+                <div class="sidebar-block">
+                    <h3>Лучшие участники</h3>
+                    <ul class="members">
+                        <li><a href="#">Alex Johnson</a></li>
+                        <li><a href="#">Maria Smith</a></li>
+                        <li><a href="#">Ivan Petrov</a></li>
+                        <li><a href="#">Elena Sidorova</a></li>
+                    </ul>
+                </div>
+            </aside>
         </div>
     </main>
-    <footer class="footer"></footer>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 Q&A. Все права защищены.</p>
+        </div>
+    </footer>
 </body>
 </html>
