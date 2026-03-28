@@ -8,54 +8,54 @@
 </head>
 <body>
     <header class="header">
-        <div class="container header-container">
-            <a href="index.html" class="logo" >Главная страница</a>
-            <div class="search">
-                <form action="#" method="get">
-                    <input type="text" name="q" placeholder="Поиск...">
-                    <button type="submit">Найти</button>
+        <div class="container header__container">
+            <a href="index.html" class="header__logo">Главная страница</a>
+            <div class="header__search">
+                <form action="#" method="get" class="header__search-form">
+                    <input type="text" name="q" placeholder="Поиск..." class="header__search-input">
+                    <button type="submit" class="header__search-button">Найти</button>
                 </form>
             </div>
-            <div class="ask-btn">
-                <a href="ask.html" class="btn">Задать вопрос</a>
+            <div class="header__ask-wrapper">
+                <a href="ask.html" class="header__ask-button">Задать вопрос</a>
             </div>
-            <div class="user-block">
-                <div class="unauth">
+            <div class="header__user-block">
+                <div class="header__unauth">
                     <a href="login.html">Вход</a> / <a href="signup.html">Регистрация</a>
                 </div>
             </div>
         </div>
     </header>
     <main class="main">
-        <div class="container main-container">
-            <div class="content">
+        <div class="container main__container">
+            <div class="main__content">
                 <div class="form-container">
                     <h2>Редактирование профиля</h2>
                     <form action="#" method="post" enctype="multipart/form-data">
-                        <div class="form-group text-center">
-                            <img src="static/img/default-avatar.png" alt="Avatar" class="avatar-large">
-                            <input type="file" name="avatar" accept="image/*" class="form-control-file mt-2">
+                        <div class="form__group text--center">
+                            <img src="static/img/default-avatar.png" alt="Avatar" class="avatar--large">
+                            <input type="file" name="avatar" accept="image/*" class="form-control--file">
                         </div>
-                        <div class="form-group">
+                        <div class="form__group">
                             <label for="username">Имя пользователя</label>
                             <input type="text" class="form-control" id="username" name="username" value="user123">
                         </div>
-                        <div class="form-group">
+                        <div class="form__group">
                             <label for="email">Email</label>
                             <input type="email" class="form-control" id="email" name="email" value="user@example.com">
                         </div>
-                        <div class="form-group">
+                        <div class="form__group">
                             <label for="password">Новый пароль</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Оставьте пустым, чтобы не менять">
                         </div>
-                        <button type="submit" class="btn btn-primary btn-block">Сохранить</button>
+                        <button type="submit" class="button button--primary button--block">Сохранить</button>
                     </form>
                 </div>
             </div>
-            <aside class="sidebar">
-                <div class="sidebar-block">
+            <aside class="main__sidebar">
+                <div class="sidebar__block">
                     <h3>Популярные теги</h3>
-                    <ul class="tags">
+                    <ul class="sidebar__tags">
                         <li><a href="tag.html">python</a></li>
                         <li><a href="tag.html">django</a></li>
                         <li><a href="tag.html">javascript</a></li>
@@ -63,9 +63,9 @@
                         <li><a href="tag.html">css</a></li>
                     </ul>
                 </div>
-                <div class="sidebar-block">
+                <div class="sidebar__block">
                     <h3>Лучшие участники</h3>
-                    <ul class="members">
+                    <ul class="sidebar__members">
                         <li><a href="#">Alex Johnson</a></li>
                         <li><a href="#">Maria Smith</a></li>
                         <li><a href="#">Ivan Petrov</a></li>

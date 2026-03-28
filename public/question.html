@@ -8,44 +8,44 @@
 </head>
 <body>
     <header class="header">
-        <div class="container header-container">
-            <a href="index.html" class="logo" >Главная страница</a>
-            <div class="search">
-                <form action="#" method="get">
-                    <input type="text" name="q" placeholder="Поиск...">
-                    <button type="submit">Найти</button>
+        <div class="container header__container">
+            <a href="index.html" class="header__logo">Главная страница</a>
+            <div class="header__search">
+                <form action="#" method="get" class="header__search-form">
+                    <input type="text" name="q" placeholder="Поиск..." class="header__search-input">
+                    <button type="submit" class="header__search-button">Найти</button>
                 </form>
             </div>
-            <div class="ask-btn">
-                <a href="ask.html" class="btn">Задать вопрос</a>
+            <div class="header__ask-wrapper">
+                <a href="ask.html" class="header__ask-button">Задать вопрос</a>
             </div>
-            <div class="user-block">
-                <div class="unauth">
+            <div class="header__user-block">
+                <div class="header__unauth">
                     <a href="login.html">Вход</a> / <a href="signup.html">Регистрация</a>
                 </div>
             </div>
         </div>
     </header>
     <main class="main">
-        <div class="container main-container">
-            <div class="content">
+        <div class="container main__container">
+            <div class="main__content">
                 <article class="question-card">
-                    <div class="vote">
-                        <button class="vote-up">▲</button>
-                        <span class="vote-count">10</span>
-                        <button class="vote-down">▼</button>
+                    <div class="question-card__vote">
+                        <button class="question-card__vote-button question-card__vote-button--up">▲</button>
+                        <span class="question-card__vote-count">10</span>
+                        <button class="question-card__vote-button question-card__vote-button--down">▼</button>
                     </div>
-                    <div class="question-main">
-                        <h1 class="question-title">Как правильно задавать вопросы на форуме?</h1>
-                        <div class="question-text">
+                    <div class="question-card__main">
+                        <h1 class="question-card__title">Как правильно задавать вопросы на форуме?</h1>
+                        <div class="question-card__text">
                             Полное описание вопроса... Здесь может быть длинный текст.
                         </div>
-                        <div class="question-meta">
-                            <div class="tags">
+                        <div class="question-card__meta">
+                            <div class="question-card__tags">
                                 <a href="#">python</a>
                                 <a href="#">django</a>
                             </div>
-                            <div class="info">
+                            <div class="question-card__info">
                                 <span>Автор: <a href="#">user123</a></span>
                                 <span>20 марта 2026</span>
                             </div>
@@ -56,19 +56,19 @@
                 <h2>Ответы (3)</h2>
                 <div class="answers-list">
                     <div class="answer-card">
-                        <div class="vote">
-                            <button class="vote-up">▲</button>
-                            <span class="vote-count">2</span>
-                            <button class="vote-down">▼</button>
+                        <div class="question-card__vote">
+                            <button class="question-card__vote-button question-card__vote-button--up">▲</button>
+                            <span class="question-card__vote-count">2</span>
+                            <button class="question-card__vote-button question-card__vote-button--down">▼</button>
                         </div>
-                        <div class="answer-main">
-                            <div class="answer-text">
+                        <div class="answer-card__main">
+                            <div class="answer-card__text">
                                 Вопрос должен быть конкретным, с примерами кода...
                             </div>
-                            <div class="answer-meta">
+                            <div class="answer-card__meta">
                                 <span>Автор: <a href="#">helper</a></span>
                                 <span>21 марта 2026</span>
-                                <label class="correct-answer">
+                                <label class="answer-card__correct-label">
                                     <input type="checkbox"> Правильный ответ
                                 </label>
                             </div>
@@ -77,24 +77,24 @@
                 </div>
 
                 <div class="pagination">
-                    <a href="#" class="page-link prev">←</a>
-                    <a href="#" class="page-link active">1</a>
-                    <a href="#" class="page-link">2</a>
-                    <a href="#" class="page-link next">→</a>
+                    <a href="#" class="pagination__link pagination__link--prev">←</a>
+                    <a href="#" class="pagination__link pagination__link--active">1</a>
+                    <a href="#" class="pagination__link">2</a>
+                    <a href="#" class="pagination__link pagination__link--next">→</a>
                 </div>
 
                 <div class="answer-form">
                     <h3>Ваш ответ</h3>
                     <form action="#" method="post">
-                        <textarea name="answer" rows="5" placeholder="Напишите ответ..."></textarea>
-                        <button type="submit" class="btn">Ответить</button>
+                        <textarea name="answer" rows="5" placeholder="Напишите ответ..." class="answer-form__textarea"></textarea>
+                        <button type="submit" class="answer-form__button">Ответить</button>
                     </form>
                 </div>
             </div>
-            <aside class="sidebar">
-                <div class="sidebar-block">
+            <aside class="main__sidebar">
+                <div class="sidebar__block">
                     <h3>Популярные теги</h3>
-                    <ul class="tags">
+                    <ul class="sidebar__tags">
                         <li><a href="tag.html">python</a></li>
                         <li><a href="tag.html">django</a></li>
                         <li><a href="tag.html">javascript</a></li>
@@ -102,9 +102,9 @@
                         <li><a href="tag.html">css</a></li>
                     </ul>
                 </div>
-                <div class="sidebar-block">
+                <div class="sidebar__block">
                     <h3>Лучшие участники</h3>
-                    <ul class="members">
+                    <ul class="sidebar__members">
                         <li><a href="#">Alex Johnson</a></li>
                         <li><a href="#">Maria Smith</a></li>
                         <li><a href="#">Ivan Petrov</a></li>
