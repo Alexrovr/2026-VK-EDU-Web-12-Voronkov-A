@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <article class="question-card">
+        <div class="question-card__vote">
+            <button class="question-card__vote-button question-card__vote-button--up">▲</button>
+            <span class="question-card__vote-count">{{ question.rating }}</span>
+            <button class="question-card__vote-button question-card__vote-button--down">▼</button>
+        </div>
+        <div class="question-card__main">
+            <h1 class="question-card__title">{{ question.title }}</h1>
+            <div class="question-card__text">
+                {{ question.text }}
+            </div>
+            <div class="question-card__meta">
+                <div class="question-card__tags">
+                    {% for tag in question.tags %}
+                        <a href="{% url 'tag' tag %}">{{ tag }}</a>
+                    {% endfor %}
+                </div>
+                <div class="question-card__info">
+                    <span>Автор: <a href="#">{{ question.author }}</a></span>
+                    <span>{{ question.date }}</span>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <h2>Ответы ({{ question.answers|length }})</h2>
+    <div class="answers-list">
+        {% for answer in question.answers %}
+            <div class="answer-card">
+                <div class="question-card__vote">
+                    <button class="question-card__vote-button question-card__vote-button--up">▲</button>
+                    <span class="question-card__vote-count">{{ answer.rating }}</span>
+                    <button class="question-card__vote-button question-card__vote-button--down">▼</button>
+                </div>
+                <div class="answer-card__main">
+                    <div class="answer-card__text">
+                        {{ answer.text }}
+                    </div>
+                    <div class="answer-card__meta">
+                        <span>Автор: <a href="#">{{ answer.author }}</a></span>
+                        <span>{{ answer.date }}</span>
+                        <label class="answer-card__correct-label">
+                            <input type="checkbox" {% if answer.is_correct %}checked{% endif %}> Правильный ответ
+                        </label>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% for p in questions.paginator.page_range %}
+            <a href="?page={{ p }}" class="pagination__link {% if questions.number == p %}pagination__link--active{% endif %}">{{ p }}</a>
+        {% endfor %}
+    </div>
+
+    <div class="answer-form">
+        <h3>Ваш ответ</h3>
+        <form action="#" method="post">
+            <textarea name="answer" rows="5" placeholder="Напишите ответ..." class="answer-form__textarea"></textarea>
+            <button type="submit" class="answer-form__button">Ответить</button>
+        </form>
+    </div>
+{% endblock %}

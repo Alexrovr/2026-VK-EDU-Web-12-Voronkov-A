@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>Регистрация</h2>
+        <form action="#" method="post" enctype="multipart/form-data">
+            <div class="form__group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form__group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form__group">
+                <label for="password">Пароль</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form__group">
+                <label for="repeat_password">Повторите пароль</label>
+                <input type="password" class="form-control" id="repeat_password" name="repeat_password" required>
+            </div>
+            <div class="form__group">
+                <label for="avatar">Аватар</label>
+                <input type="file" class="form-control--file" id="avatar" name="avatar" accept="image/*">
+                <small class="form__text">Загрузите изображение (png, jpg, не более 2 МБ).</small>
+            </div>
+            <button type="submit" class="button button--primary button--block">Зарегистрироваться</button>
+            <div class="form__footer">
+                Уже есть аккаунт? <a href="{% url 'login' %}">Войдите</a>
+            </div>
+        </form>
+    </div>
+    {% block sidebar %}
+    {% endblock %}
+{% endblock %}
+
+    <!-- <div class="form-container">
+        <h2>Регистрация</h2>
+        <form action="#" method="post" enctype="multipart/form-data">
+            <div class="form__group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" class="form-control" id="username" name="username" required>
+            </div>
+            <div class="form__group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="form__group">
+                <label for="password">Пароль</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="form__group">
+                <label for="repeat_password">Повторите пароль</label>
+                <input type="password" class="form-control" id="repeat_password" name="repeat_password" required>
+            </div>
+            <div class="form__group">
+                <label for="avatar">Аватар</label>
+                <input type="file" class="form-control--file" id="avatar" name="avatar" accept="image/*">
+                <small class="form__text">Загрузите изображение (png, jpg, не более 2 МБ).</small>
+            </div>
+            <button type="submit" class="button button--primary button--block">Зарегистрироваться</button>
+            <div class="form__footer">
+                Уже есть аккаунт? <a href="login.html">Войдите</a>
+            </div>
+        </form>
+    </div> -->

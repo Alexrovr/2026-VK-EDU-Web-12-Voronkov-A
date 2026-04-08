@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="questions-list">
+        {% for q in questions %}
+            <article class="question-card">
+                <div class="question-card__vote">
+                    <button class="question-card__vote-button question-card__vote-button--up">▲</button>
+                    <span class="question-card__vote-count">{{ q.rating }}</span>
+                    <button class="question-card__vote-button question-card__vote-button--down">▼</button>
+                </div>
+                <div class="question-card__main">
+                    <h2 class="question-card__title question-card__title--short">
+                        <a href="{% url 'question_detail' q.id %}">{{ q.title }}</a>
+                    </h2>
+                    <div class="question-card__text question-card__text--short">
+                        {{ q.text }}
+                    </div>
+                    <div class="question-card__meta">
+                        <div class="question-card__tags">
+                            {% for tag in q.tags.all %}
+                                <a href="#">{{ tag.name }}</a>
+                            {% endfor %}
+                        </div>
+                        <div class="question-card__info">
+                            <span class="question-card__answers-count">{{ q.answers|length }} {% if q.answers|length == 1 %}ответ{% else %}ответа{% endif %}</span>
+                            <span class="question-card__author">Автор: <a href="#">{{ q.author }}</a></span>
+                            <span class="question-card__date">{{ q.date }}</span>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+
+    <div class="pagination">
+        {% for p in questions.paginator.page_range %}
+            <a href="?page={{ p }}" class="pagination__link {% if questions.number == p %}pagination__link--active{% endif %}">{{ p }}</a>
+        {% endfor %}
+    </div>
+{% endblock %}

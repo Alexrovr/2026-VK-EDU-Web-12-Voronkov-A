@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>Задать новый вопрос</h2>
+        <form action="#" method="post">
+            <div class="form__group">
+                <label for="title">Заголовок</label>
+                <input type="text" class="form-control" id="title" name="title" placeholder="Кратко опишите суть вопроса" maxlength="255">
+                <small class="form__text">Максимум 255 символов</small>
+            </div>
+            <div class="form__group">
+                <label for="text">Текст вопроса</label>
+                <textarea class="form-control" id="text" name="text" rows="6" placeholder="Подробно опишите проблему..."></textarea>
+                <small class="form__text">Постарайтесь изложить суть ясно и полно.</small>
+            </div>
+            <div class="form__group">
+                <label for="tags">Теги</label>
+                <input type="text" class="form-control" id="tags" name="tags" placeholder="python, django, ..." maxlength="200">
+                <small class="form__text">Введите теги через запятую.</small>
+            </div>
+            <button type="submit" class="button button--primary button--block">Опубликовать</button>
+        </form>
+    </div>
+{% endblock %}
