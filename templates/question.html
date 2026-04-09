@@ -53,15 +53,20 @@
     </div>
 
     <div class="pagination">
-        {% for p in questions.paginator.page_range %}
-            <a href="?page={{ p }}" class="pagination__link {% if questions.number == p %}pagination__link--active{% endif %}">{{ p }}</a>
+        {% for p in smart_pages %}
+            {% if p == '...' %}
+                <span class="pagination__ellipsis">{{ p }}</span>
+            {% else %}
+                <a href="?page={{ p }}" class="pagination__link {% if questions.number == p %}pagination__link--active{% endif %}">{{ p }}</a>
+            {% endif %}
         {% endfor %}
     </div>
 
     <div class="answer-form">
         <h3>Ваш ответ</h3>
-        <form action="#" method="post">
-            <textarea name="answer" rows="5" placeholder="Напишите ответ..." class="answer-form__textarea"></textarea>
+        <form id="answer-form" action="#" method="post" novalidate>
+            <textarea name="answer" id="answer" rows="5" placeholder="Напишите ответ..." class="answer-form__textarea" required></textarea>
+            <div class="form__invalid-feedback" id="answer-error"></div>
             <button type="submit" class="answer-form__button">Ответить</button>
         </form>
     </div>

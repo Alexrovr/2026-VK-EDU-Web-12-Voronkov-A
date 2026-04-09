@@ -37,8 +37,12 @@
         {% endfor %}
     </div>
     <div class="pagination">
-        {% for p in questions.paginator.page_range %}
-            <a href="?page={{ p }}" class="pagination__link {% if questions.number == p %}pagination__link--active{% endif %}">{{ p }}</a>
+        {% for p in smart_pages %}
+            {% if p == '...' %}
+                <span class="pagination__ellipsis">{{ p }}</span>
+            {% else %}
+                <a href="?page={{ p }}" class="pagination__link {% if questions.number == p %}pagination__link--active{% endif %}">{{ p }}</a>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

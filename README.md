@@ -1,6 +1,5 @@
 # Hw-2 - Обработка HTTP запросов
 
-# Q&A Project
 
 ## Локальный запуск
 1. `python -m venv venv`
