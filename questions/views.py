@@ -20,7 +20,7 @@ QUESTIONS = [
         'date': f'2024-06-{i:02d}',
         'rating': i * 3,
         'tags' : ['python', 'django'] if i % 2 == 0 else ['javascript', 'react']
-    } for i in range(1, 3000)
+    } for i in range(1, 30)
 ]
 
 def paginate(objects_list, request, per_page=10):

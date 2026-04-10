@@ -25,7 +25,7 @@
                             {% endfor %}
                         </div>
                         <div class="question-card__info">
-                            <span class="question-card__answers-count">{{ q.answers|length }} ответов</span>
+                            <span class="question-card__answers-count">{{ q.answers|length }} {% if q.answers|length == 1 %}ответ{% else %}ответа{% endif %}</span>
                             <span>Автор: <span class="question-card__author">{{ q.author }}</span></span>
                             <span class="question-card__date">{{ q.date }}</span>
                         </div>
