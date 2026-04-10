@@ -173,6 +173,11 @@ body {
     color: #007bff;
 }
 
+.sidebar__members {
+    color: #007bff;
+}
+
+
 .footer {
     background-color: #fff;
     border-top: 1px solid #ddd;
@@ -290,6 +295,11 @@ body {
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+.question-card__author {
+    color: #007bff;
+    text-decoration: none;
 }
 
 .question-card__meta {

@@ -20,7 +20,7 @@
                     {% endfor %}
                 </div>
                 <div class="question-card__info">
-                    <span>Автор: <a href="#">{{ question.author }}</a></span>
+                    <span>Автор: <span class="question-card__author">{{ question.author }}</span></span>
                     <span>{{ question.date }}</span>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                         {{ answer.text }}
                     </div>
                     <div class="answer-card__meta">
-                        <span>Автор: <a href="#">{{ answer.author }}</a></span>
+                        <span>Автор: <span class="question-card__author">{{ answer.author }}</span></span>
                         <span>{{ answer.date }}</span>
                         <label class="answer-card__correct-label">
                             <input type="checkbox" {% if answer.is_correct %}checked{% endif %}> Правильный ответ
