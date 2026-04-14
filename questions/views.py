@@ -20,7 +20,7 @@ QUESTIONS = [
         'date': f'2024-06-{i:02d}',
         'rating': i * 3,
         'tags' : ['python', 'django'] if i % 2 == 0 else ['javascript', 'react']
-    } for i in range(1, 30)
+    } for i in range(1, 300)
 ]
 
 def paginate(objects_list, request, per_page=10):
@@ -34,55 +34,25 @@ def paginate(objects_list, request, per_page=10):
         page = paginator.page(paginator.num_pages)
     return page
 
-def get_smart_pagination(paginator, current_page, neighbors=2):
-    total_pages = paginator.num_pages
-    current_num = current_page.number
-
-    if total_pages <= 7:
-        return list(paginator.page_range)
-
-    pages = []
-
-    pages.append(1)
-
-    start = max(2, current_num - neighbors)
-    end = min(total_pages - 1, current_num + neighbors)
-
-    if start > 2:
-        pages.append('...')
-
-    pages.extend(range(start, end + 1))
-
-    if end < total_pages - 1:
-        pages.append('...')
-
-    pages.append(total_pages)
-
-    return pages
-
 def index(request):
     page = paginate(QUESTIONS, request, 5)
-    paginator = page.paginator
-    smart_pages = get_smart_pagination(paginator, page)
-    return render(request, 'index.html', {'questions': page, 'smart_pages': smart_pages})
+    return render(request, 'index.html', {'questions': page})
 
 def hot(request):
     page = paginate(QUESTIONS[::-1], request, 5)
-    paginator = page.paginator
-    smart_pages = get_smart_pagination(paginator, page)
-    return render(request, 'hot.html', {'questions': page, 'smart_pages': smart_pages})
+    return render(request, 'hot.html', {'questions': page})
 
 def tag(request, tag_name):
     filtered = [q for q in QUESTIONS if tag_name in q['tags']]
     page = paginate(filtered, request, 5)
-    paginator = page.paginator
-    smart_pages = get_smart_pagination(paginator, page)
-    return render(request, 'tag.html', {'questions': page, 'tag': tag_name, 'smart_pages': smart_pages})
+    return render(request, 'tag.html', {'questions': page, 'tag': tag_name})
 
 def question_detail(request, question_id):
     question = next((q for q in QUESTIONS if q['id'] == question_id), None)
-    smart_pages = []
-    return render(request, 'question.html', {'question': question, 'smart_pages': smart_pages})
+    if question:
+        answers_page = paginate(question['answers'], request, 5)
+        return render(request, 'question.html', {'question': question, 'answers': answers_page})
+    return render(request, 'question.html', {'question': question})
 
 def ask(request):
     return render(request, 'ask.html')

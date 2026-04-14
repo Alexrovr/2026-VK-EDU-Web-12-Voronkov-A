@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load pagination %}
 
 {% block content %}
     <h2 class="tag-page__header">Вопросы по тегу: {{ tag }}</h2>
@@ -33,16 +34,10 @@
                 </div>
             </article>
         {% empty %}
-            <p>Вопросов с тегом «{{ tag }}" не найдено.</p>
+            <p>Вопросов с тегом «{{ tag }}» не найдено.</p>
         {% endfor %}
     </div>
-    <div class="pagination">
-        {% for p in smart_pages %}
-            {% if p == '...' %}
-                <span class="pagination__ellipsis">{{ p }}</span>
-            {% else %}
-                <a href="?page={{ p }}" class="pagination__link {% if questions.number == p %}pagination__link--active{% endif %}">{{ p }}</a>
-            {% endif %}
-        {% endfor %}
-    </div>
+    {% if questions.paginator.num_pages > 1 %}
+        {% include "pagination.html" with pages=questions|smart_pagination current_page=questions.number %}
+    {% endif %}
 {% endblock %}

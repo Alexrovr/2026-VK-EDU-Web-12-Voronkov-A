@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load pagination %}
 
 {% block content %}
     <article class="question-card">
@@ -27,9 +28,9 @@
         </div>
     </article>
 
-    <h2>Ответы ({{ question.answers|length }})</h2>
+    <h2>Ответы ({{ answers.paginator.count }})</h2>
     <div class="answers-list">
-        {% for answer in question.answers %}
+        {% for answer in answers.object_list %}
             <div class="answer-card">
                 <div class="question-card__vote">
                     <button class="question-card__vote-button question-card__vote-button--up">▲</button>
@@ -52,15 +53,9 @@
         {% endfor %}
     </div>
 
-    <div class="pagination">
-        {% for p in smart_pages %}
-            {% if p == '...' %}
-                <span class="pagination__ellipsis">{{ p }}</span>
-            {% else %}
-                <a href="?page={{ p }}" class="pagination__link {% if questions.number == p %}pagination__link--active{% endif %}">{{ p }}</a>
-            {% endif %}
-        {% endfor %}
-    </div>
+    {% if answers.paginator.num_pages > 1 %}
+        {% include "pagination.html" with pages=answers|smart_pagination current_page=answers.number %}
+    {% endif %}
 
     <div class="answer-form">
         <h3>Ваш ответ</h3>
@@ -70,4 +65,5 @@
             <button type="submit" class="answer-form__button">Ответить</button>
         </form>
     </div>
+
 {% endblock %}
