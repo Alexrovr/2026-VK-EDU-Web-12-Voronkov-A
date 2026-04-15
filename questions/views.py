@@ -23,6 +23,8 @@ QUESTIONS = [
     } for i in range(1, 300)
 ]
 
+POPULAR_TAGS = ['python', 'django', 'javascript', 'react', 'css']
+
 def paginate(objects_list, request, per_page=10):
     paginator = Paginator(objects_list, per_page)
     page_number = request.GET.get('page', 1)
@@ -36,23 +38,19 @@ def paginate(objects_list, request, per_page=10):
 
 def index(request):
     page = paginate(QUESTIONS, request, 5)
-    return render(request, 'index.html', {'questions': page})
-
-def hot(request):
-    page = paginate(QUESTIONS[::-1], request, 5)
-    return render(request, 'hot.html', {'questions': page})
+    return render(request, 'index.html', {'questions': page, 'popular_tags': POPULAR_TAGS})
 
 def tag(request, tag_name):
     filtered = [q for q in QUESTIONS if tag_name in q['tags']]
     page = paginate(filtered, request, 5)
-    return render(request, 'tag.html', {'questions': page, 'tag': tag_name})
+    return render(request, 'tag.html', {'questions': page, 'tag': tag_name, 'popular_tags': POPULAR_TAGS})
 
 def question_detail(request, question_id):
     question = next((q for q in QUESTIONS if q['id'] == question_id), None)
     if question:
         answers_page = paginate(question['answers'], request, 5)
-        return render(request, 'question.html', {'question': question, 'answers': answers_page})
-    return render(request, 'question.html', {'question': question})
+        return render(request, 'question.html', {'question': question, 'answers': answers_page, 'popular_tags': POPULAR_TAGS})
+    return render(request, 'question.html', {'question': question, 'popular_tags': POPULAR_TAGS})
 
 def ask(request):
-    return render(request, 'ask.html')
+    return render(request, 'ask.html', {'popular_tags': POPULAR_TAGS})

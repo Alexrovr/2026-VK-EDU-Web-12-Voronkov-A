@@ -39,11 +39,9 @@
                 <div class="sidebar__block">
                     <h3>Популярные теги</h3>
                     <ul class="sidebar__tags">
-                        <li><a href="{% url 'tag' 'python' %}">python</a></li>
-                        <li><a href="{% url 'tag' 'django' %}">django</a></li>
-                        <li><a href="{% url 'tag' 'javascript' %}">javascript</a></li>
-                        <li><a href="{% url 'tag' 'html' %}">html</a></li>
-                        <li><a href="{% url 'tag' 'css' %}">css</a></li>
+                        {% for tag in popular_tags %}
+                            <li><a href="{% url 'tag' tag %}">{{ tag }}</a></li>
+                        {% endfor %}
                     </ul>
                 </div>
                 <div class="sidebar__block">
