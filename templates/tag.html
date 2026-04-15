@@ -3,41 +3,47 @@
 {% load pagination %}
 
 {% block content %}
-    <h2 class="tag-page__header">Вопросы по тегу: {{ tag }}</h2>
-    <div class="questions-list">
-        {% for q in questions %}
-            <article class="question-card">
-                <div class="question-card__vote">
-                    <button class="question-card__vote-button question-card__vote-button--up">▲</button>
-                    <span class="question-card__vote-count">{{ q.rating }}</span>
-                    <button class="question-card__vote-button question-card__vote-button--down">▼</button>
-                </div>
-                <div class="question-card__main">
-                    <h2 class="question-card__title">
-                        <a href="{% url 'question_detail' q.id %}">{{ q.title }}</a>
-                    </h2>
-                    <div class="question-card__text question-card__text--short">
-                        {{ q.text }}
+    {% if questions.object_list %}
+        <h2 class="tag-page__header">Вопросы по тегу: {{ tag }}</h2>
+        <div class="questions-list">
+            {% for q in questions %}
+                <article class="question-card">
+                    <div class="question-card__vote">
+                        <button class="question-card__vote-button question-card__vote-button--up">▲</button>
+                        <span class="question-card__vote-count">{{ q.rating }}</span>
+                        <button class="question-card__vote-button question-card__vote-button--down">▼</button>
                     </div>
-                    <div class="question-card__meta">
-                        <div class="question-card__tags">
-                            {% for tag_item in q.tags %}
-                                <a href="{% url 'tag' tag_item %}">{{ tag_item }}</a>
-                            {% endfor %}
+                    <div class="question-card__main">
+                        <h2 class="question-card__title">
+                            <a href="{% url 'question_detail' q.id %}">{{ q.title }}</a>
+                        </h2>
+                        <div class="question-card__text question-card__text--short">
+                            {{ q.text }}
                         </div>
-                        <div class="question-card__info">
-                            <span class="question-card__answers-count">{{ q.answers|length }} {% if q.answers|length == 1 %}ответ{% else %}ответа{% endif %}</span>
-                            <span>Автор: <span class="question-card__author">{{ q.author }}</span></span>
-                            <span class="question-card__date">{{ q.date }}</span>
+                        <div class="question-card__meta">
+                            <div class="question-card__tags">
+                                {% for tag_item in q.tags %}
+                                    <a href="{% url 'tag' tag_item %}">{{ tag_item }}</a>
+                                {% endfor %}
+                            </div>
+                            <div class="question-card__info">
+                                <span class="question-card__answers-count">{{ q.answers|length }} {% if q.answers|length == 1 %}ответ{% else %}ответа{% endif %}</span>
+                                <span>Автор: <span class="question-card__author">{{ q.author }}</span></span>
+                                <span class="question-card__date">{{ q.date }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </article>
-        {% empty %}
-            <p>Вопросов с тегом «{{ tag }}» не найдено.</p>
-        {% endfor %}
-    </div>
-    {% if questions.paginator.num_pages > 1 %}
-        {% include "pagination.html" with pages=questions|smart_pagination current_page=questions.number %}
+                </article>
+            {% endfor %}
+        </div>
+        {% if questions.paginator.num_pages > 1 %}
+            {% include "pagination.html" with pages=questions|smart_pagination current_page=questions.number %}
+        {% endif %}
+    {% else %}
+        <h2 class="tag-page__header">Вопросов с тегом «{{ tag }}» не найдено</h2>
+        <div class="empty-state">
+            <p>Будьте первым, кто добавит вопрос с этим тегом!</p>
+            <a href="{% url 'ask' %}" class="button button--emptytag">Задать вопрос</a>
+        </div>
     {% endif %}
 {% endblock %}

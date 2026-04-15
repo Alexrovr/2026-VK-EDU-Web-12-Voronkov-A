@@ -584,6 +584,15 @@ textarea.form-control {
     color: #fff;
 }
 
+.button--emptytag {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.button--emptytag:hover {
+    background-color: #218838;
+}
+
 .button--primary {
     background-color: #007bff;
     color: #fff;
@@ -703,4 +712,18 @@ textarea.form-control {
         font-size: 0.75rem;
         padding: 3px 6px;
     }
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem 2rem;
+    border-radius: 8px;
+    margin: 2rem 0;
+    color: green;
+}
+
+.empty-state p {
+    font-size: 1.3rem;
+    color: #333;
+    margin-bottom: 1.5rem;
 }
