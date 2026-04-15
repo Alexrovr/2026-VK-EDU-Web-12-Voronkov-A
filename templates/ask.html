@@ -6,19 +6,19 @@
         <h2>Задать новый вопрос</h2>
         <form id="ask-form" action="#" method="post" novalidate>
             <div class="form__group">
-                <label for="title">Заголовок</label>
+                <label class="form__group-labelinput" for="title">Заголовок</label>
                 <input type="text" class="form-control" id="title" name="title" placeholder="Кратко опишите суть вопроса" maxlength="255" required>
                 <small class="form__text">Максимум 255 символов</small>
                 <div class="form__invalid-feedback" id="title-error"></div>
             </div>
             <div class="form__group">
-                <label for="text">Текст вопроса</label>
+                <label class="form__group-labelinput" for="text">Текст вопроса</label>
                 <textarea class="form-control" id="text" name="text" rows="6" placeholder="Подробно опишите проблему..." required></textarea>
                 <small class="form__text">Постарайтесь изложить суть ясно и полно.</small>
                 <div class="form__invalid-feedback" id="text-error"></div>
             </div>
             <div class="form__group">
-                <label for="tags">Теги</label>
+                <label class="form__group-labelinput" for="tags">Теги</label>
                 <input type="text" class="form-control" id="tags" name="tags" placeholder="python, django, ..." maxlength="200">
                 <small class="form__text">Введите теги через запятую.</small>
                 <div class="form__invalid-feedback" id="tags-error"></div>

@@ -76,6 +76,11 @@ body {
     border-radius: 4px;
 }
 
+.header__search-input::placeholder {
+    color: #9a9d9f;
+    opacity: 1;
+}
+
 .header__search-button {
     padding: 0.5rem 1rem;
     font-size: 1rem;
@@ -434,6 +439,11 @@ body {
     font-family: inherit;
 }
 
+.answer-form__textarea::placeholder {
+    color: #9a9d9f;
+    opacity: 1;
+}
+
 .answer-form__button {
     background-color: #28a745;
     color: #fff;
@@ -455,13 +465,21 @@ body {
 
 .form__group {
     margin-bottom: 1.5rem;
+    font-weight: 400;
 }
 
-.form__group label {
+.form__group-label {
     display: block;
     font-weight: 600;
     margin-bottom: 0.5rem;
     color: #333;
+}
+
+.form__group-labelinput {
+    display: block;
+    font-weight: 400;
+    margin-bottom: 0.5rem;
+    color: #6c757d;
 }
 
 .form__group input[type="text"],
@@ -525,6 +543,11 @@ body {
     box-shadow: 0 0 0 3px rgba(0,123,255,0.25);
 }
 
+.form-control::placeholder {
+    color: #9a9d9f;
+    opacity: 1;
+}
+
 textarea.form-control {
     resize: vertical;
     min-height: 120px;
@@ -543,7 +566,7 @@ textarea.form-control {
 
 .form__text {
     font-size: 0.875rem;
-    color: #6c757d;
+    color: #9a9d9f;
     margin-top: 0.25rem;
 }
 

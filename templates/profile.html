@@ -11,19 +11,19 @@
                 <input type="file" name="avatar" accept="image/*" class="form-control--file">
             </div>
             <div class="form__group">
-                <label for="username">Имя пользователя</label>
+                <label class="form__group-labelinput" for="username">Имя пользователя</label>
                 <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
             </div>
             <div class="form__group">
-                <label for="email">Email</label>
+                <label class="form__group-labelinput" for="email">Email</label>
                 <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
             </div>
             <div class="form__group">
-                <label for="bio">О себе</label>
+                <label class="form__group-labelinput" for="bio">О себе</label>
                 <textarea class="form-control" id="bio" name="bio" rows="3">{{ user.bio }}</textarea>
             </div>
             <div class="form__group">
-                <label for="password">Новый пароль</label>
+                <label class="form__group-labelinput" for="password">Новый пароль</label>
                 <input type="password" class="form-control" id="password" name="password" placeholder="Оставьте пустым, чтобы не менять">
             </div>
             <button type="submit" class="button button--primary button--block">Сохранить</button>
