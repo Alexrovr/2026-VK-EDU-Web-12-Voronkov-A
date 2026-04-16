@@ -19,4 +19,4 @@ def signup(request):
 
 def profile(request, user_id):
     user = next((u for u in USERS if u['id'] == user_id), None)
-    return render(request, 'profile.html', {'user': user})
+    return render(request, 'profile.html', {'user': user, 'popular_tags': ['python', 'django', 'javascript', 'react', 'css']})
