@@ -1,15 +1,16 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Q&A – Главная</title>
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <header class="header">
         <div class="container header__container">
-            <a href="index.html" class="header__logo">Главная страница</a>
+            <a href="{% url 'index' %}" class="header__logo">Главная страница</a>
             <div class="header__search">
                 <form action="#" method="get" class="header__search-form">
                     <input type="text" name="q" placeholder="Поиск..." class="header__search-input">
@@ -17,11 +18,11 @@
                 </form>
             </div>
             <div class="header__ask-wrapper">
-                <a href="ask.html" class="header__ask-button">Задать вопрос</a>
+                <a href="{% url 'ask' %}" class="header__ask-button">Задать вопрос</a>
             </div>
             <div class="header__user-block">
                 <div class="header__unauth">
-                    <a href="login.html">Вход</a> / <a href="signup.html">Регистрация</a>
+                    <a href="{% url 'login' %}">Вход</a> / <a href="{% url 'signup' %}">Регистрация</a>
                 </div>
             </div>
         </div>
@@ -30,28 +31,30 @@
     <main class="main">
         <div class="container main__container">
             <div class="main__content">
+                {% block content %}
+                {% endblock %}
             </div>
+            {% block sidebar %}
             <aside class="main__sidebar">
                 <div class="sidebar__block">
                     <h3>Популярные теги</h3>
                     <ul class="sidebar__tags">
-                        <li><a href="tag.html">python</a></li>
-                        <li><a href="tag.html">django</a></li>
-                        <li><a href="tag.html">javascript</a></li>
-                        <li><a href="tag.html">html</a></li>
-                        <li><a href="tag.html">css</a></li>
+                        {% for tag in popular_tags %}
+                            <li><a href="{% url 'tag' tag %}">{{ tag }}</a></li>
+                        {% endfor %}
                     </ul>
                 </div>
                 <div class="sidebar__block">
                     <h3>Лучшие участники</h3>
                     <ul class="sidebar__members">
-                        <li><a href="#">Alex Johnson</a></li>
-                        <li><a href="#">Maria Smith</a></li>
-                        <li><a href="#">Ivan Petrov</a></li>
-                        <li><a href="#">Elena Sidorova</a></li>
+                        <li><span>Alex Johnson</span></li>
+                        <li><span>Maria Smith</span></li>
+                        <li><span>Ivan Petrov</span></li>
+                        <li><span>Elena Sidorova</span></li>
                     </ul>
                 </div>
             </aside>
+            {% endblock %}
         </div>
     </main>
 
@@ -61,6 +64,6 @@
         </div>
     </footer>
 
-    <script src="static/js/main.js"></script>
+    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

@@ -1,0 +1,9 @@
+<div class="pagination">
+    {% for p in pages %}
+        {% if p == '...' %}
+            <span class="pagination__ellipsis">{{ p }}</span>
+        {% else %}
+            <a href="?page={{ p }}" class="pagination__link {% if current_page == p %}pagination__link--active{% endif %}">{{ p }}</a>
+        {% endif %}
+    {% endfor %}
+</div>

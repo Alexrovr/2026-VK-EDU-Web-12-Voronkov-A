@@ -1,10 +1,11 @@
-# Hw-1 - Верстка статического сайта
-Статическая HTML/CSS реализация макета веб-сайта для вопросов и ответов
-ask.html - форма добавления вопроса
-base.html - общий макет(хедер, футер, сайд меню)
-index.html - главная страница, главная страница с вопросами
-login.html - страница с авторизацией
-profile.html - редактирование профиля
-question.html - страница вопроса (карточка вопроса, список ответов)
-signup.html - страница с регистрацией
-tag.html - страница с вопросами по тегу
+# Hw-2 - Обработка HTTP запросов
+
+
+## Локальный запуск
+1. `python -m venv venv`
+2. `source venv/bin/activate` (или `venv\Scripts\activate` на Win)
+3. `pip install -r requirements.txt`
+4. `python manage.py runserver`
+
+## Запуск через Docker
+`docker compose up --build`

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>Вход</h2>
+        <form id="login-form" action="#" method="post" novalidate>
+            <div class="form__group">
+                <label class="form__group-labelinput" for="email">Email</label>
+                <input type="email" class="form-control" id="email" name="email" placeholder="example@mail.ru" required>
+                <div class="form__invalid-feedback" id="email-error"></div>
+            </div>
+            <div class="form__group">
+                <label class="form__group-labelinput" for="password">Пароль</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+                <div class="form__invalid-feedback" id="password-error"></div>
+            </div>
+            <button type="submit" class="button button--primary button--block">Войти</button>
+            <div class="form__footer">
+                Нет аккаунта? <a href="{% url 'signup' %}">Зарегистрируйтесь</a>
+            </div>
+        </form>
+    </div>
+    {% block sidebar %}
+    {% endblock %}
+{% endblock %}
