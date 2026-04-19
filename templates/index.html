@@ -20,12 +20,12 @@
                     </div>
                     <div class="question-card__meta">
                         <div class="question-card__tags">
-                            {% for tag_item in q.tags %}
+                            {% for tag_item in q.tags.all %}
                                 <a href="{% url 'tag' tag_item %}">{{ tag_item }}</a>
                             {% endfor %}
                         </div>
                         <div class="question-card__info">
-                            <span class="question-card__answers-count">{{ q.answers|length }} {% if q.answers|length == 1 %}ответ{% else %}ответа{% endif %}</span>
+                            <span class="question-card__answers-count">{{ q.answers.count }} {{ q.answers.count|plural_answers }}</span>
                             <span>Автор: <span class="question-card__author">{{ q.author }}</span></span>
                             <span class="question-card__date">{{ q.date }}</span>
                         </div>

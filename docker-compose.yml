@@ -1,15 +1,28 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: qadb
+      POSTGRES_USER: qa_user
+      POSTGRES_PASSWORD: qa_pass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
   web:
     build: .
-    ports:
-      - "8000:8000"
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
-      - media_volume:/app/media
-    environment:
-      - DEBUG=True
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - .env.docker
 
 volumes:
-  media_volume:
+  postgres_data:
