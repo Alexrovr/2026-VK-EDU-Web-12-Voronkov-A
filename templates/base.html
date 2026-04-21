@@ -48,7 +48,7 @@
                     <h3>Лучшие участники</h3>
                     <ul class="sidebar__members">
                         {% for user in top_users %}
-                            <li><span>{{ user.username }}</span></li>
+                            <li><a href="{% url 'profile' user.id %}">{{ user.username }}</a></li>
                         {% endfor %}
                     </ul>
                 </div>
