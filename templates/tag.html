@@ -7,33 +7,7 @@
         <h2 class="tag-page__header">Вопросы по тегу: {{ tag }}</h2>
         <div class="questions-list">
             {% for q in questions %}
-                <article class="question-card">
-                    <div class="question-card__vote">
-                        <button class="question-card__vote-button question-card__vote-button--up">▲</button>
-                        <span class="question-card__vote-count">{{ q.rating }}</span>
-                        <button class="question-card__vote-button question-card__vote-button--down">▼</button>
-                    </div>
-                    <div class="question-card__main">
-                        <h2 class="question-card__title question-card__title--short">
-                            <a href="{% url 'question_detail' q.id %}">{{ q.title }}</a>
-                        </h2>
-                        <div class="question-card__text question-card__text--short">
-                            {{ q.text }}
-                        </div>
-                        <div class="question-card__meta">
-                            <div class="question-card__tags">
-                                {% for tag_item in q.tags.all %}
-                                    <a href="{% url 'tag' tag_item %}">{{ tag_item }}</a>
-                                {% endfor %}
-                            </div>
-                            <div class="question-card__info">
-                                <span class="question-card__answers-count">{{ q.answers.count }} {{ q.answers.count|plural_answers }}</span>
-                                <span>Автор: <span class="question-card__author">{{ q.author }}</span></span>
-                                <span class="question-card__date">{{ q.created_at }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+                {% include 'question_item.html' %}
             {% endfor %}
         </div>
         {% if questions.paginator.num_pages > 1 %}

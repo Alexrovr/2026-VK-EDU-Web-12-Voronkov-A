@@ -37,6 +37,9 @@
             {% block sidebar %}
             <aside class="main__sidebar">
                 <div class="sidebar__block">
+                    <a href="{% url 'hot' %}" class="sidebar-title sidebar-title--blue">Лучшие вопросы</a>
+                </div>
+                <div class="sidebar__block">
                     <h3>Популярные теги</h3>
                     <ul class="sidebar__tags">
                         {% for tag in popular_tags %}

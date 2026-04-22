@@ -7,11 +7,16 @@ def paginate(objects_list, request, per_page=10):
     paginator = Paginator(objects_list, per_page)
     page_number = request.GET.get('page', 1)
     return paginator.get_page(page_number)
-    
+
 def index(request):
     questions = Question.objects.get_new()
     page = paginate(questions, request, 20)
     return render(request, 'index.html', {'questions': page})
+
+def hot(request):
+    questions = Question.objects.get_hot()
+    page = paginate(questions, request, 20)
+    return render(request, 'hot.html', {'questions': page})
 
 def tag(request, tag_name):
     tag = get_object_or_404(Tag, name=tag_name)
