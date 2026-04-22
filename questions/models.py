@@ -6,7 +6,7 @@ class QuestionManager(models.Manager):
         return self.select_related('author', 'author__profile').prefetch_related('tags').order_by('-created_at')
 
     def get_hot(self):
-        return self.select_related('author', 'author__profile').prefetch_related('tags').filter(rating__gte=50).order_by('-rating')
+        return self.select_related('author', 'author__profile').prefetch_related('tags').filter(rating__gte=1).order_by('-rating')
 
     def get_by_tag(self, tag_name):
         return self.filter(tags__name=tag_name).select_related('author', 'author__profile').prefetch_related('tags').order_by('-created_at')

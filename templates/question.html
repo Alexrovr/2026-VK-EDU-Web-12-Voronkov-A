@@ -21,7 +21,7 @@
                     {% endfor %}
                 </div>
                 <div class="question-card__info">
-                    <span>Автор: <span class="question-card__author">{{ question.author }}</span></span>
+                    <span>Автор: <a href="{% url 'profile' question.author.id %}" class="question-card__author">{{ question.author }}</a></span>
                     <span>{{ question.created_at }}</span>
                 </div>
             </div>
@@ -42,7 +42,7 @@
                         {{ answer.text }}
                     </div>
                     <div class="answer-card__meta">
-                        <span>Автор: <span class="question-card__author">{{ answer.author }}</span></span>
+                        <span>Автор: <a href="{% url 'profile' answer.author.id %}" class="question-card__author">{{ answer.author }}</a></span>
                         <span>{{ answer.created_at }}</span>
                         <label class="answer-card__correct-label">
                             <input type="checkbox" {% if answer.is_correct %}checked{% endif %}> Правильный ответ
@@ -54,7 +54,7 @@
     </div>
 
     {% if answers.paginator.num_pages > 1 %}
-        {% include "pagination.html" with pages=answers|smart_pagination current_page=answers.number %}
+        {% include "includes/pagination.html" with pages=answers|smart_pagination current_page=answers.number %}
     {% endif %}
 
     <div class="answer-form">

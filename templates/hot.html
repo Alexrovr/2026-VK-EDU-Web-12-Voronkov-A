@@ -6,10 +6,10 @@
     <h2 class="tag-page__header">Лучшие вопросы</h2>
     <div class="questions-list">
         {% for q in questions %}
-            {% include 'question_item.html' %}
+            {% include 'includes/question_item.html' %}
         {% endfor %}
     </div>
     {% if questions.paginator.num_pages > 1 %}
-        {% include "pagination.html" with pages=questions|smart_pagination current_page=questions.number %}
+        {% include "includes/pagination.html" with pages=questions|smart_pagination current_page=questions.number %}
     {% endif %}
 {% endblock %}
