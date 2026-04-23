@@ -37,6 +37,9 @@
             {% block sidebar %}
             <aside class="main__sidebar">
                 <div class="sidebar__block">
+                    <a href="{% url 'hot' %}" class="sidebar-title sidebar-title--blue">Лучшие вопросы</a>
+                </div>
+                <div class="sidebar__block">
                     <h3>Популярные теги</h3>
                     <ul class="sidebar__tags">
                         {% for tag in popular_tags %}
@@ -47,10 +50,9 @@
                 <div class="sidebar__block">
                     <h3>Лучшие участники</h3>
                     <ul class="sidebar__members">
-                        <li><span>Alex Johnson</span></li>
-                        <li><span>Maria Smith</span></li>
-                        <li><span>Ivan Petrov</span></li>
-                        <li><span>Elena Sidorova</span></li>
+                        {% for user in top_users %}
+                            <li><a href="{% url 'profile' user.id %}">{{ user.username }}</a></li>
+                        {% endfor %}
                     </ul>
                 </div>
             </aside>

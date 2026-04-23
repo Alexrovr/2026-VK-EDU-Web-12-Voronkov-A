@@ -6,21 +6,22 @@
         <h2>Редактирование профиля</h2>
         {% if user %}
         <form action="#" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
             <div class="form__group text--center">
-                <img src="{% static user.avatar %}" alt="Avatar" class="avatar--large">
+                <img src="{{ user_profile.profile.get_avatar_url }}" alt="Avatar" class="avatar--large">
                 <input type="file" name="avatar" accept="image/*" class="form-control--file">
             </div>
             <div class="form__group">
                 <label class="form__group-labelinput" for="username">Имя пользователя</label>
-                <input type="text" class="form-control" id="username" name="username" value="{{ user.username }}">
+                <input type="text" class="form-control" id="username" name="username" value="{{ user_profile.username }}">
             </div>
             <div class="form__group">
                 <label class="form__group-labelinput" for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+                <input type="email" class="form-control" id="email" name="email" value="{{ user_profile.email }}">
             </div>
             <div class="form__group">
                 <label class="form__group-labelinput" for="bio">О себе</label>
-                <textarea class="form-control" id="bio" name="bio" rows="3">{{ user.bio }}</textarea>
+                <textarea class="form-control" id="bio" name="bio" rows="3">{{ user_profile.profile.bio }}</textarea>
             </div>
             <div class="form__group">
                 <label class="form__group-labelinput" for="password">Новый пароль</label>
