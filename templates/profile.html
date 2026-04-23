@@ -9,11 +9,6 @@
             {% csrf_token %}
             <div class="form__group text--center">
                 <img src="{{ user_profile.profile.get_avatar_url }}" alt="Avatar" class="avatar--large">
-                <!-- {% if user_profile.avatar %}
-                    <img src="{% static 'img/default-avatar.png' %}" alt="Avatar" class="avatar--large">
-                {% else %}
-                    <img src="{% static 'img/default-avatar.png' %}" alt="Avatar" class="avatar--large">
-                {% endif %} -->
                 <input type="file" name="avatar" accept="image/*" class="form-control--file">
             </div>
             <div class="form__group">
