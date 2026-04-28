@@ -21,8 +21,16 @@
             </div>
             <div class="question-card__info">
                 <span class="question-card__answers-count">{{ q.answers_cnt }} {{ q.answers_cnt|plural_answers }}</span>
-                <span>Автор: <a href="{% url 'profile' q.author.id %}" class="question-card__author">{{ q.author }}</a></span>
-                <span class="question-card__date">{{ q.created_at }}</span>
+                {% if q.author %}
+                    <span>Автор: <a href="{% url 'profile' q.author.id %}" class="question-card__author">{{ q.author }}</a></span>
+                {% else %}
+                    <span>Автор: <span class="question-card__deleted-author">Удален</span></span>
+                {% endif %}
+                {% if q.updated_at and q.updated_at != q.created_at %}
+                    <span class="question-card__date">Обновлено {{ q.updated_at }}</span>
+                {% else %}
+                    <span class="question-card__date">{{ q.created_at }}</span>
+                {% endif %}
             </div>
         </div>
     </div>

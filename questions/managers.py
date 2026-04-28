@@ -6,13 +6,15 @@ class QuestionManager(models.Manager):
         return self.select_related('author', 'author__profile') \
         .prefetch_related('tags') \
         .annotate(answers_cnt=Count('answers')) \
-        .order_by('-created_at')
+        .filter(is_active=True) \
+        .order_by('-updated_at')
 
     def get_hot(self):
         return self.select_related('author', 'author__profile') \
         .prefetch_related('tags') \
         .annotate(answers_cnt=Count('answers')) \
         .filter(rating__gte=1) \
+        .filter(is_active=True) \
         .order_by('-rating')
 
     def get_by_tag(self, tag_name):
@@ -20,4 +22,5 @@ class QuestionManager(models.Manager):
         .select_related('author', 'author__profile') \
         .prefetch_related('tags') \
         .annotate(answers_cnt=Count('answers')) \
-        .order_by('-created_at')
+        .filter(is_active=True) \
+        .order_by('-updated_at')

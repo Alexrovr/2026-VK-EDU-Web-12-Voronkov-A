@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from core.models import Profile
 from django.db import transaction
-from django.db.models import OuterRef, Subquery, Sum
+from django.db.models import F, OuterRef, Subquery, Sum
 from django.db.models.functions import Coalesce
 from questions.models import Question, Answer, Tag, QuestionLike, AnswerLike
 from faker import Faker
@@ -45,38 +45,45 @@ class Command(BaseCommand):
         tag_ids = list(Tag.objects.order_by('-id').values_list('id', flat=True)[:tags_count])
 
         self.stdout.write('Creating questions...')
-        questions = [
-            Question(
+        questions = []
+        for _ in range(questions_count):
+            created_at = fake.date_time_this_year()
+            questions.append(Question(
                 title=fake.sentence()[:255],
                 text=fake.text(),
                 author_id=random.choice(user_ids),
-                created_at=fake.date_time_this_year(),
-            ) for _ in range(questions_count)
-        ]
+                created_at=created_at,
+                updated_at=created_at,
+            ))
         Question.objects.bulk_create(questions, batch_size=5000)
         question_ids = list(Question.objects.order_by('-id').values_list('id', flat=True)[:questions_count])
+        # Question.objects.filter(id__in=question_ids).update(updated_at=F('created_at'))
 
         self.stdout.write('Adding tags to questions...')
         ThroughModel = Question.tags.through
         question_tags = []
         for q in question_ids:
             q_tags = random.sample(tag_ids, k=random.randint(1, 3))
+            # q_tags = random.sample(tag_ids, k=random.randint(1, min(3, len(tag_ids))))
             for t in q_tags:
                 question_tags.append(ThroughModel(question_id=q, tag_id=t))
         ThroughModel.objects.bulk_create(question_tags, batch_size=10000)
 
         self.stdout.write('Creating answers...')
-        answers = [
-            Answer(
+        answers = []
+        for _ in range(answers_count):
+            created_at = fake.date_time_this_year()
+            answers.append(Answer(
                 text=fake.text(),
                 author_id=random.choice(user_ids),
                 question_id=random.choice(question_ids),
-                created_at=fake.date_time_this_year(),
+                created_at=created_at,
+                updated_at=created_at,
                 is_correct=random.choice([True, False]),
-            ) for _ in range(answers_count)
-        ]
+            ))
         Answer.objects.bulk_create(answers, batch_size=10000)
         answer_ids = list(Answer.objects.order_by('-id').values_list('id', flat=True)[:answers_count])
+        # Answer.objects.filter(id__in=answer_ids).update(updated_at=F('created_at'))
 
         unique_question_likes = set()
         while len(unique_question_likes) < questions_count * 5:

@@ -26,7 +26,7 @@ def tag(request, tag_name):
 
 def question_detail(request, question_id):
     question = get_object_or_404(Question.objects.select_related('author', 'author__profile').prefetch_related('tags'), pk=question_id)
-    answers = question.answers.select_related('author', 'author__profile').all()
+    answers = question.answers.select_related('author', 'author__profile').filter(is_active=True).order_by('-updated_at')
     page = paginate(answers, request, 30)
     return render(request, 'question.html', {'question': question, 'answers': page})
 

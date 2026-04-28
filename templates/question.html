@@ -3,7 +3,7 @@
 {% load pagination %}
 
 {% block content %}
-    <article class="question-card">
+    <article class="question-card question-card--detail">
         <div class="question-card__vote">
             <button class="question-card__vote-button question-card__vote-button--up">▲</button>
             <span class="question-card__vote-count">{{ question.rating }}</span>
@@ -14,15 +14,26 @@
             <div class="question-card__text">
                 {{ question.text }}
             </div>
-            <div class="question-card__meta">
-                <div class="question-card__tags">
-                    {% for tag in question.tags.all %}
-                        <a href="{% url 'tag' tag %}">{{ tag }}</a>
-                    {% endfor %}
+            <div class="question-card__meta question-card__meta--detail">
+                <div class="question-card__left-meta">
+                    <div class="question-card__tags">
+                        {% for tag in question.tags.all %}
+                            <a href="{% url 'tag' tag %}">{{ tag }}</a>
+                        {% endfor %}
+                    </div>
+                    <div class="question-card__info">
+                        {% if question.author %}
+                            <span>Автор: <a href="{% url 'profile' question.author.id %}" class="question-card__author">{{ question.author }}</a></span>
+                        {% else %}
+                            <span>Автор: <span class="question-card__deleted-author">Удален</span></span>
+                        {% endif %}
+                    </div>
                 </div>
-                <div class="question-card__info">
-                    <span>Автор: <a href="{% url 'profile' question.author.id %}" class="question-card__author">{{ question.author }}</a></span>
-                    <span>{{ question.created_at }}</span>
+                <div class="question-card__dates">
+                    <span>Опубликовано {{ question.created_at }}</span>
+                    {% if question.updated_at and question.updated_at != question.created_at %}
+                        <span>Обновлено {{ question.updated_at }}</span>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -43,8 +54,16 @@
                             {{ answer.text }}
                         </div>
                         <div class="answer-card__meta">
-                            <span>Автор: <a href="{% url 'profile' answer.author.id %}" class="question-card__author">{{ answer.author }}</a></span>
-                            <span>{{ answer.created_at }}</span>
+                            {% if answer.author %}
+                                <span>Автор: <a href="{% url 'profile' answer.author.id %}" class="question-card__author">{{ answer.author }}</a></span>
+                            {% else %}
+                                <span>Автор: <span class="question-card__deleted-author">Удален</span></span>
+                            {% endif %}
+                            {% if answer.updated_at and answer.updated_at != answer.created_at %}
+                                <span>Обновлено {{ answer.updated_at }}</span>
+                            {% else %}
+                                <span>{{ answer.created_at }}</span>
+                            {% endif %}
                             <label class="answer-card__correct-label">
                                 <input type="checkbox" {% if answer.is_correct %}checked{% endif %}> Правильный ответ
                             </label>
