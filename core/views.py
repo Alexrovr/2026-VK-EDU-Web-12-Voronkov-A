@@ -9,5 +9,5 @@ def signup(request):
     return render(request, 'signup.html')
 
 def profile(request, user_id):
-    user_data = get_object_or_404(User, pk=user_id)
+    user_data = get_object_or_404(User.objects.select_related('profile'), pk=user_id)
     return render(request, 'profile.html', {'user_profile': user_data})

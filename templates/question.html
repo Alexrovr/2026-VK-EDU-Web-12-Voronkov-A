@@ -29,32 +29,36 @@
     </article>
 
     <h2>Ответы ({{ answers.paginator.count }})</h2>
-    <div class="answers-list">
-        {% for answer in answers.object_list %}
-            <div class="answer-card">
-                <div class="question-card__vote">
-                    <button class="question-card__vote-button question-card__vote-button--up">▲</button>
-                    <span class="question-card__vote-count">{{ answer.rating }}</span>
-                    <button class="question-card__vote-button question-card__vote-button--down">▼</button>
-                </div>
-                <div class="answer-card__main">
-                    <div class="answer-card__text">
-                        {{ answer.text }}
+    {% if answers %}
+        <div class="answers-list">
+            {% for answer in answers.object_list %}
+                <div class="answer-card">
+                    <div class="question-card__vote">
+                        <button class="question-card__vote-button question-card__vote-button--up">▲</button>
+                        <span class="question-card__vote-count">{{ answer.rating }}</span>
+                        <button class="question-card__vote-button question-card__vote-button--down">▼</button>
                     </div>
-                    <div class="answer-card__meta">
-                        <span>Автор: <a href="{% url 'profile' answer.author.id %}" class="question-card__author">{{ answer.author }}</a></span>
-                        <span>{{ answer.created_at }}</span>
-                        <label class="answer-card__correct-label">
-                            <input type="checkbox" {% if answer.is_correct %}checked{% endif %}> Правильный ответ
-                        </label>
+                    <div class="answer-card__main">
+                        <div class="answer-card__text">
+                            {{ answer.text }}
+                        </div>
+                        <div class="answer-card__meta">
+                            <span>Автор: <a href="{% url 'profile' answer.author.id %}" class="question-card__author">{{ answer.author }}</a></span>
+                            <span>{{ answer.created_at }}</span>
+                            <label class="answer-card__correct-label">
+                                <input type="checkbox" {% if answer.is_correct %}checked{% endif %}> Правильный ответ
+                            </label>
+                        </div>
                     </div>
                 </div>
-            </div>
-        {% endfor %}
-    </div>
+            {% endfor %}
+        </div>
 
-    {% if answers.paginator.num_pages > 1 %}
-        {% include "includes/pagination.html" with pages=answers|smart_pagination current_page=answers.number %}
+        {% if answers.paginator.num_pages > 1 %}
+            {% include "includes/pagination.html" with pages=answers|smart_pagination current_page=answers.number %}
+        {% endif %}
+    {% else %}
+        <p>Ответов пока нет. Будьте первым, кто ответит на этот вопрос!</p>
     {% endif %}
 
     <div class="answer-form">

@@ -7,6 +7,7 @@ from django.db.models.functions import Coalesce
 from questions.models import Question, Answer, Tag, QuestionLike, AnswerLike
 from faker import Faker
 import random
+import uuid
 
 class Command(BaseCommand):
     help = 'Fills the database with fake data'
@@ -24,13 +25,14 @@ class Command(BaseCommand):
         tags_count = ratio
 
         self.stdout.write('Creating users...')
-        users = [
-            User(
-                username=fake.unique.user_name(),
+        users = []
+        for _ in range(users_count):
+            unique_suffix = uuid.uuid4().hex[:8]
+            users.append(User(
+                username=f"{fake.unique.user_name()}_{unique_suffix}",
                 email=fake.email(),
                 password='password123',
-            ) for _ in range(users_count)
-        ]
+            ))
         User.objects.bulk_create(users, batch_size=5000)
 
         user_ids = list(User.objects.order_by('-id').values_list('id', flat=True)[:users_count])
@@ -38,7 +40,7 @@ class Command(BaseCommand):
         Profile.objects.bulk_create(profiles, batch_size=5000)
 
         self.stdout.write('Creating tags...')
-        tags = [Tag(name=fake.unique.word() + str(i)) for i in range(tags_count)]
+        tags = [Tag(name=f"{fake.word()}_{uuid.uuid4().hex[:5]}") for i in range(tags_count)]
         Tag.objects.bulk_create(tags, batch_size=5000)
         tag_ids = list(Tag.objects.order_by('-id').values_list('id', flat=True)[:tags_count])
 
