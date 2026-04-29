@@ -1,23 +1,7 @@
-{% extends 'base.html' %}
-{% load static %}
-{% load pagination %}
+{% extends 'includes/question_list.html' %}
 
-{% block content %}
-    {% if questions %}
-        <h2 class="tag-page__header">Последние вопросы</h2>
-        <div class="questions-list">
-            {% for q in questions %}
-                {% include 'includes/question_item.html' %}
-            {% endfor %}
-        </div>
-        {% if questions.paginator.num_pages > 1 %}
-            {% include "includes/pagination.html" with pages=questions|smart_pagination current_page=questions.number %}
-        {% endif %}
-    {% else %}
-        <h2 class="tag-page__header">Нет ни одного вопроса.</h2>
-        <div class="empty-state">
-            <p>Будьте первым, кто добавит вопрос!</p>
-            <a href="{% url 'ask' %}" class="button button--emptytag">Задать вопрос</a>
-        </div>
-    {% endif %}
-{% endblock %}
+{% block list_title %}Последние вопросы{% endblock %}
+
+{% block empty_title %}Нет ни одного вопроса.{% endblock %}
+
+{% block empty_message %}Будьте первым, кто добавит вопрос!{% endblock %}
