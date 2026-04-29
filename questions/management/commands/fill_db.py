@@ -57,14 +57,12 @@ class Command(BaseCommand):
             ))
         Question.objects.bulk_create(questions, batch_size=5000)
         question_ids = list(Question.objects.order_by('-id').values_list('id', flat=True)[:questions_count])
-        # Question.objects.filter(id__in=question_ids).update(updated_at=F('created_at'))
 
         self.stdout.write('Adding tags to questions...')
         ThroughModel = Question.tags.through
         question_tags = []
         for q in question_ids:
             q_tags = random.sample(tag_ids, k=random.randint(1, 3))
-            # q_tags = random.sample(tag_ids, k=random.randint(1, min(3, len(tag_ids))))
             for t in q_tags:
                 question_tags.append(ThroughModel(question_id=q, tag_id=t))
         ThroughModel.objects.bulk_create(question_tags, batch_size=10000)
@@ -83,7 +81,6 @@ class Command(BaseCommand):
             ))
         Answer.objects.bulk_create(answers, batch_size=10000)
         answer_ids = list(Answer.objects.order_by('-id').values_list('id', flat=True)[:answers_count])
-        # Answer.objects.filter(id__in=answer_ids).update(updated_at=F('created_at'))
 
         unique_question_likes = set()
         while len(unique_question_likes) < questions_count * 5:
