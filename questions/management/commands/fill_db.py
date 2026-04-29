@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from core.models import Profile
 from django.db import transaction
-from django.db.models import F, OuterRef, Subquery, Sum
+from django.db.models import OuterRef, Subquery, Sum
 from django.db.models.functions import Coalesce
 from questions.models import Question, Answer, Tag, QuestionLike, AnswerLike
 from faker import Faker
@@ -33,16 +33,16 @@ class Command(BaseCommand):
                 email=fake.email(),
                 password='password123',
             ))
-        User.objects.bulk_create(users, batch_size=5000)
+        created_users = User.objects.bulk_create(users, batch_size=5000)
 
-        user_ids = list(User.objects.order_by('-id').values_list('id', flat=True)[:users_count])
+        user_ids = [u.id for u in created_users]
         profiles = [Profile(user_id=u, bio=fake.text(max_nb_chars=200)) for u in user_ids]
         Profile.objects.bulk_create(profiles, batch_size=5000)
 
         self.stdout.write('Creating tags...')
         tags = [Tag(name=f"{fake.word()}_{uuid.uuid4().hex[:5]}") for i in range(tags_count)]
-        Tag.objects.bulk_create(tags, batch_size=5000)
-        tag_ids = list(Tag.objects.order_by('-id').values_list('id', flat=True)[:tags_count])
+        created_tags = Tag.objects.bulk_create(tags, batch_size=5000)
+        tag_ids = [t.id for t in created_tags]
 
         self.stdout.write('Creating questions...')
         questions = []
@@ -55,8 +55,8 @@ class Command(BaseCommand):
                 created_at=created_at,
                 updated_at=created_at,
             ))
-        Question.objects.bulk_create(questions, batch_size=5000)
-        question_ids = list(Question.objects.order_by('-id').values_list('id', flat=True)[:questions_count])
+        created_questions = Question.objects.bulk_create(questions, batch_size=5000)
+        question_ids = [q.id for q in created_questions]
 
         self.stdout.write('Adding tags to questions...')
         ThroughModel = Question.tags.through
@@ -79,8 +79,8 @@ class Command(BaseCommand):
                 updated_at=created_at,
                 is_correct=random.choice([True, False]),
             ))
-        Answer.objects.bulk_create(answers, batch_size=10000)
-        answer_ids = list(Answer.objects.order_by('-id').values_list('id', flat=True)[:answers_count])
+        created_answers = Answer.objects.bulk_create(answers, batch_size=10000)
+        answer_ids = [a.id for a in created_answers]
 
         unique_question_likes = set()
         while len(unique_question_likes) < questions_count * 5:
@@ -99,7 +99,7 @@ class Command(BaseCommand):
             ).values('question').annotate(
                 total=Sum('value')
             ).values('total')
-            Question.objects.update(
+            Question.objects.filter(id__in=question_ids).update(
                 rating=Coalesce(Subquery(likes_sum), 0)
             )
 
@@ -120,7 +120,7 @@ class Command(BaseCommand):
             ).values('answer').annotate(
                 total=Sum('value')
             ).values('total')
-            Answer.objects.update(
+            Answer.objects.filter(id__in=answer_ids).update(
                 rating=Coalesce(Subquery(likes_sum), 0)
             )
 
