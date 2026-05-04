@@ -1,56 +1,34 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from .models import Question, Tag
 
-QUESTIONS = [
-    {
-        'id': i,
-        'title': f'Question {i}',
-        'text': f'This is the full text for question number {i}. It contains a lot of interesting details.',
-        'answers': [
-            {
-                'id': j,
-                'text': f'This is answer number {j} for question {i}',
-                'author': f'helper_{j}',
-                'rating': j * 2 - 1,
-                'date': '2026-04-08',
-                'is_correct': j == 1
-            } for j in range(1, (i % 4) + 2)
-        ],
-        'author': f'user{i}',
-        'date': f'2024-06-{i:02d}',
-        'rating': i * 3,
-        'tags' : ['python', 'django'] if i % 2 == 0 else ['javascript', 'react']
-    } for i in range(1, 300)
-]
-
-POPULAR_TAGS = ['python', 'django', 'javascript', 'react', 'css']
 
 def paginate(objects_list, request, per_page=10):
     paginator = Paginator(objects_list, per_page)
     page_number = request.GET.get('page', 1)
-    try:
-        page = paginator.page(page_number)
-    except PageNotAnInteger:
-        page = paginator.page(1)
-    except EmptyPage:
-        page = paginator.page(paginator.num_pages)
-    return page
+    return paginator.get_page(page_number)
 
 def index(request):
-    page = paginate(QUESTIONS, request, 5)
-    return render(request, 'index.html', {'questions': page, 'popular_tags': POPULAR_TAGS})
+    questions = Question.objects.get_new()
+    page = paginate(questions, request, 20)
+    return render(request, 'index.html', {'questions': page})
+
+def hot(request):
+    questions = Question.objects.get_hot()
+    page = paginate(questions, request, 20)
+    return render(request, 'hot.html', {'questions': page})
 
 def tag(request, tag_name):
-    filtered = [q for q in QUESTIONS if tag_name in q['tags']]
-    page = paginate(filtered, request, 5)
-    return render(request, 'tag.html', {'questions': page, 'tag': tag_name, 'popular_tags': POPULAR_TAGS})
+    tag = get_object_or_404(Tag, name=tag_name)
+    questions = Question.objects.get_by_tag(tag_name)
+    page = paginate(questions, request, 20)
+    return render(request, 'tag.html', {'questions': page, 'tag': tag})
 
 def question_detail(request, question_id):
-    question = next((q for q in QUESTIONS if q['id'] == question_id), None)
-    if question:
-        answers_page = paginate(question['answers'], request, 5)
-        return render(request, 'question.html', {'question': question, 'answers': answers_page, 'popular_tags': POPULAR_TAGS})
-    return render(request, 'question.html', {'question': question, 'popular_tags': POPULAR_TAGS})
+    question = get_object_or_404(Question.objects.select_related('author', 'author__profile').prefetch_related('tags'), pk=question_id)
+    answers = question.answers.select_related('author', 'author__profile').filter(is_active=True).order_by('-updated_at')
+    page = paginate(answers, request, 30)
+    return render(request, 'question.html', {'question': question, 'answers': page})
 
 def ask(request):
-    return render(request, 'ask.html', {'popular_tags': POPULAR_TAGS})
+    return render(request, 'ask.html')
