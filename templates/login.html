@@ -4,11 +4,18 @@
 {% block content %}
     <div class="form-container">
         <h2>Вход</h2>
-        <form id="login-form" action="#" method="post" novalidate>
+        <form id="login-form" action="{% url 'login' %}" method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form__alert--danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
             <div class="form__group">
-                <label class="form__group-labelinput" for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="example@mail.ru" required>
-                <div class="form__invalid-feedback" id="email-error"></div>
+                <label class="form__group-labelinput" for="username">Имя пользователя или email</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Логин или email" required>
+                <div class="form__invalid-feedback" id="username-error"></div>
             </div>
             <div class="form__group">
                 <label class="form__group-labelinput" for="password">Пароль</label>

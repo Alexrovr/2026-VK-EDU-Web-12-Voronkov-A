@@ -29,6 +29,10 @@
             </div>
             <button type="submit" class="button button--primary button--block">Сохранить</button>
         </form>
+        <form action="{% url 'logout' %}" method="post" style="margin-top: 12px;">
+            {% csrf_token %}
+            <button type="submit" class="button button--secondary button--block">Выйти</button>
+        </form>
         {% else %}
             <p>Пользователь не найден</p>
         {% endif %}

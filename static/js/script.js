@@ -1,24 +1,19 @@
 const loginForm = document.getElementById('login-form');
 
 if (loginForm) {
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-
     function clearLoginErrors() {
-        const emailError = document.getElementById('email-error');
+        const usernameError = document.getElementById('username-error');
         const passwordError = document.getElementById('password-error');
-        const emailField = document.getElementById('email');
+        const usernameField = document.getElementById('username');
         const passwordField = document.getElementById('password');
 
-        [emailError, passwordError].forEach(el => {
+        [usernameError, passwordError].forEach(el => {
             if (el) {
                 el.textContent = '';
                 el.style.display = 'none';
             }
         });
-        [emailField, passwordField].forEach(field => {
+        [usernameField, passwordField].forEach(field => {
             if (field) field.classList.remove('form-control--invalid');
         });
     }
@@ -37,14 +32,11 @@ if (loginForm) {
         clearLoginErrors();
         let isValid = true;
 
-        const email = document.getElementById('email');
+        const username = document.getElementById('username');
         const password = document.getElementById('password');
 
-        if (!email.value.trim()) {
-            showLoginError('email', 'Это поле обязательно для заполнения');
-            isValid = false;
-        } else if (!isValidEmail(email.value.trim())) {
-            showLoginError('email', 'Пожалуйста, введите корректный email адрес');
+        if (!username.value.trim()) {
+            showLoginError('username', 'Это поле обязательно для заполнения');
             isValid = false;
         }
 

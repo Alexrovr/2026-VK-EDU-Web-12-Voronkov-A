@@ -4,7 +4,15 @@
 {% block content %}
     <div class="form-container">
         <h2>Регистрация</h2>
-        <form id="signup-form" action="#" method="post" enctype="multipart/form-data" novalidate>
+        <form id="signup-form" action="{% url 'signup' %}" method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form__alert--danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
             <div class="form__group">
                 <label class="form__group-labelinput" for="username">Имя пользователя</label>
                 <input type="text" class="form-control" id="username" name="username" required>
