@@ -4,7 +4,8 @@ from django.contrib.auth.models import User
 from .models import Profile
 from django.contrib.auth.decorators import login_required
 from django.utils.http import url_has_allowed_host_and_scheme
-from .forms import LoginForm, SignupForm
+from django.contrib.auth import update_session_auth_hash
+from .forms import LoginForm, SignupForm, UserUpdateForm, ProfileUpdateForm
 
 def login(request):
     next_url = request.GET.get('next', '/')
@@ -42,5 +43,24 @@ def profile(request, user_id):
 
 @login_required
 def settings(request):
-    user = User.objects.select_related('profile').get(pk=request.user.id)
-    return render(request, 'settings.html', {'user': user})
+    user = user = User.objects.select_related('profile').get(pk=request.user.id)
+
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=user)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=user.profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            update_session_auth_hash(request, user)
+            return redirect('settings')
+    else:
+        user_form = UserUpdateForm(instance=user)
+        profile_form = ProfileUpdateForm(instance=user.profile)
+
+    context = {
+        'user': user,
+        'user_form': user_form,
+        'profile_form': profile_form,
+    }
+    return render(request, 'settings.html', context)

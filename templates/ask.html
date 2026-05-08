@@ -4,7 +4,9 @@
 {% block content %}
     <div class="form-container">
         <h2>Задать новый вопрос</h2>
-        <form id="ask-form" action="#" method="post" novalidate>
+
+        <form id="ask-form" action="{% url 'ask' %}" method="post" novalidate>
+            {% csrf_token %}
             <div class="form__group">
                 <label class="form__group-labelinput" for="title">Заголовок</label>
                 <input type="text" class="form-control" id="title" name="title" placeholder="Кратко опишите суть вопроса" maxlength="255" required>
@@ -23,7 +25,13 @@
                 <small class="form__text">Введите теги через запятую.</small>
                 <div class="form__invalid-feedback" id="tags-error"></div>
             </div>
-            <button type="submit" class="button button--primary button--block">Опубликовать</button>
+            {% if not user.is_authenticated %}
+                <div class="form__alert form__alert--warning">
+                    Чтобы задать вопрос, пожалуйста, <a href="{% url 'login' %}?next={% url 'ask' %}" class="login-link">войдите</a> или <a href="{% url 'signup' %}" class="login-link">зарегистрируйтесь</a>.
+                </div>
+            {% else %}
+                <button type="submit" class="button button--primary button--block" {% if not user.is_authenticated %}disabled{% endif %}>Опубликовать</button>
+            {% endif %}
         </form>
     </div>
 {% endblock %}

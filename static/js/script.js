@@ -274,7 +274,7 @@ const answerForm = document.getElementById('answer-form');
 if (answerForm) {
     function clearAnswerErrors() {
         const errorEl = document.getElementById('answer-error');
-        const field = document.getElementById('answer');
+        const field = document.getElementById('id_text');
         if (errorEl) {
             errorEl.textContent = '';
             errorEl.style.display = 'none';
@@ -284,7 +284,7 @@ if (answerForm) {
 
     function showAnswerError(fieldName, message) {
         const errorEl = document.getElementById(`${fieldName}-error`);
-        const field = document.getElementById(fieldName);
+        const field = document.getElementById('id_text');
         if (errorEl) {
             errorEl.textContent = message;
             errorEl.style.display = 'block';
@@ -296,7 +296,7 @@ if (answerForm) {
         clearAnswerErrors();
         let isValid = true;
 
-        const answer = document.getElementById('answer');
+        const answer = document.getElementById('id_text');
 
         if (!answer.value.trim()) {
             showAnswerError('answer', 'Ответ не может быть пустым');
@@ -316,7 +316,7 @@ if (answerForm) {
         }
     });
 
-    const answerField = document.getElementById('answer');
+    const answerField = document.getElementById('id_text');
     if (answerField) {
         answerField.addEventListener('focus', function() {
             const errorEl = document.getElementById('answer-error');

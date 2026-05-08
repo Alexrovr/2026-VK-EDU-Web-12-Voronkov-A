@@ -80,13 +80,18 @@
         <p>Ответов пока нет. Будьте первым, кто ответит на этот вопрос!</p>
     {% endif %}
 
+    {% if user.is_authenticated %}
     <div class="answer-form">
         <h3>Ваш ответ</h3>
-        <form id="answer-form" action="#" method="post" novalidate>
-            <textarea name="answer" id="answer" rows="5" placeholder="Напишите ответ..." class="answer-form__textarea" required></textarea>
+        <form id="answer-form" action="" method="post" novalidate>
+            {% csrf_token %}
+            {{ form.text }}
             <div class="form__invalid-feedback" id="answer-error"></div>
             <button type="submit" class="answer-form__button">Ответить</button>
         </form>
     </div>
+    {% else %}
+    <p>Чтобы ответить на вопрос, пожалуйста, <a href="{% url 'login' %}?next={% url 'ask' %}" class="login-link">войдите</a> или <a href="{% url 'signup' %}" class="login-link">зарегистрируйтесь</a>.</p>
+    {% endif %}
 
 {% endblock %}

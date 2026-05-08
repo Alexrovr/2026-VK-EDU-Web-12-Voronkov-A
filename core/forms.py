@@ -49,6 +49,26 @@ class SignupForm(forms.ModelForm):
             email=self.cleaned_data['email'],
             password=self.cleaned_data['password']
         )
-        # Используем get_or_create вместо create
         Profile.objects.get_or_create(user=user)
         return user
+
+class UserUpdateForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput, required=False, label='Новый пароль')
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        password = self.cleaned_data.get('password')
+        if password:
+            user.set_password(password)
+        if commit:
+            user.save()
+        return user
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'bio']
