@@ -20,7 +20,7 @@
                 {% endfor %}
             </div>
             <div class="question-card__info">
-                <span class="question-card__answers-count">{{ q.answers_cnt }} {{ q.answers_cnt|plural_answers }}</span>
+                <span class="question-card__answers-count">{{ q.answers.all|length }} {{ q.answers.all|length|plural_answers }}</span>
                 {% if q.author %}
                     <span>Автор: <a href="{% url 'profile' q.author.id %}" class="question-card__author">{{ q.author }}</a></span>
                 {% else %}

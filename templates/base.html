@@ -50,7 +50,9 @@
                     <h3>Популярные теги</h3>
                     <ul class="sidebar__tags">
                         {% for tag in popular_tags %}
-                            <li><a href="{% url 'tag' tag %}">{{ tag }}</a></li>
+                            <li><a href="{% url 'tag' tag %}">{{ tag }}</a>
+                            <small>({{ tag.question_count }} вопросов)</small>
+                            </li>
                         {% endfor %}
                     </ul>
                 </div>

@@ -6,8 +6,17 @@ from django.utils import timezone
 class DefaultModel(models.Model):
     now = timezone.now
     created_at = models.DateTimeField(default=now, verbose_name='Дата создания')
-    updated_at = models.DateTimeField(default=now, verbose_name='Дата обновления')
+    updated_at = models.DateTimeField(default=now, verbose_name='Дата обновления', db_index=True)
     is_active = models.BooleanField(default=True, verbose_name='Активный')
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            now = timezone.now()
+            self.created_at = now
+            self.updated_at = now
+        else:
+            self.updated_at = timezone.now()
+        super().save(*args, **kwargs)
 
     class Meta:
         abstract = True
@@ -26,7 +35,7 @@ class Question(DefaultModel):
     title = models.CharField(max_length=255, verbose_name='Заголовок')
     text = models.TextField(verbose_name='Текст вопроса')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='questions', verbose_name='Автор')
-    rating = models.IntegerField(default=0, verbose_name='Рейтинг')
+    rating = models.IntegerField(default=0, verbose_name='Рейтинг', db_index=True)
     tags = models.ManyToManyField(Tag, related_name='questions', verbose_name='Теги')
 
     objects = QuestionManager()
