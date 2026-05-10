@@ -43,11 +43,12 @@ def profile(request, user_id):
 
 @login_required
 def settings(request):
-    user = user = User.objects.select_related('profile').get(pk=request.user.id)
+    user = request.user
+    profile, created = Profile.objects.get_or_create(user=user)
 
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=user)
-        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=user.profile)
+        profile_form = ProfileUpdateForm(request.POST, request.FILES, instance=profile)
 
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
@@ -56,7 +57,7 @@ def settings(request):
             return redirect('settings')
     else:
         user_form = UserUpdateForm(instance=user)
-        profile_form = ProfileUpdateForm(instance=user.profile)
+        profile_form = ProfileUpdateForm(instance=profile)
 
     context = {
         'user': user,
