@@ -328,3 +328,57 @@ if (answerForm) {
         });
     }
 }
+
+function toggleQuestionEdit() {
+    const view = document.getElementById('question-view');
+    const edit = document.getElementById('question-edit');
+    if (view && edit) {
+        view.style.display = view.style.display === 'none' ? 'block' : 'none';
+        edit.style.display = edit.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+function toggleAnswerEdit(answerId) {
+    const view = document.getElementById(`answer-view-${answerId}`);
+    const edit = document.getElementById(`answer-edit-${answerId}`);
+    if (view && edit) {
+        view.style.display = view.style.display === 'none' ? 'block' : 'none';
+        edit.style.display = edit.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const editQuestionBtn = document.querySelector('[data-action="edit-question"]');
+    if (editQuestionBtn) {
+        editQuestionBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleQuestionEdit();
+        });
+    }
+
+    const editAnswerBtns = document.querySelectorAll('[data-action="edit-answer"]');
+    editAnswerBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const answerId = this.getAttribute('data-answer-id');
+            toggleAnswerEdit(answerId);
+        });
+    });
+
+    const cancelQuestionBtns = document.querySelectorAll('[data-action="cancel-question-edit"]');
+    cancelQuestionBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleQuestionEdit();
+        });
+    });
+
+    const cancelAnswerBtns = document.querySelectorAll('[data-action="cancel-answer-edit"]');
+    cancelAnswerBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const answerId = this.getAttribute('data-answer-id');
+            toggleAnswerEdit(answerId);
+        });
+    });
+});

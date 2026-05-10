@@ -28,10 +28,25 @@ def tag(request, tag_name):
 
 def question_detail(request, question_id):
     question = get_object_or_404(Question.objects.select_related('author', 'author__profile').prefetch_related('tags'), pk=question_id)
-    answers = question.answers.select_related('author', 'author__profile').filter(is_active=True).order_by('-updated_at')
-    page = paginate(answers, request, 30)
 
-    if request.method == 'POST':
+    if request.method == 'POST' and 'edit_question' in request.POST:
+        if request.user == question.author:
+            form = AskForm(request.POST, instance=question)
+            if form.is_valid():
+                form.save(commit=False)
+                question.save()
+        return redirect('question_detail', question_id=question_id)
+
+    if request.method == 'POST' and 'edit_answer' in request.POST:
+        answer_id = request.POST.get('answer_id')
+        answer = get_object_or_404(Answer, pk=answer_id)
+        if request.user == answer.author:
+            form = AnswerForm(request.POST, instance=answer)
+            if form.is_valid():
+                form.save()
+        return redirect('question_detail', question_id=question_id)
+
+    if request.method == 'POST' and 'new_answer' in request.POST:
         if not request.user.is_authenticated:
             return redirect('login')
         form = AnswerForm(request.POST)
@@ -43,6 +58,9 @@ def question_detail(request, question_id):
             return redirect('question_detail', question_id=question_id)
     else:
         form = AnswerForm()
+
+    answers = question.answers.select_related('author', 'author__profile').filter(is_active=True).order_by('-updated_at')
+    page = paginate(answers, request, 30)
 
     return render(request, 'question.html', {'question': question, 'answers': page, 'form': form})
 

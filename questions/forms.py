@@ -16,12 +16,14 @@ class AskForm(forms.ModelForm):
             'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 6}),
         }
 
-    def save(self, author, commit=True):
+    def save(self, author=None, commit=True):
         question = super().save(commit=False)
-        question.author = author
+        if author:
+            question.author = author
         if commit:
             question.save()
             tags_list = self.cleaned_data['tags'].split(',')
+            question.tags.clear()
             for tag_name in tags_list:
                 tag_name = tag_name.strip()
                 if tag_name:

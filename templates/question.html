@@ -10,10 +10,36 @@
             <button class="question-card__vote-button question-card__vote-button--down">▼</button>
         </div>
         <div class="question-card__main">
-            <h1 class="question-card__title">{{ question.title }}</h1>
-            <div class="question-card__text">
-                {{ question.text }}
+            <div id="question-view">
+                <h1 class="question-card__title">{{ question.title }}</h1>
+                <div class="question-card__text">
+                    {{ question.text }}
+                </div>
             </div>
+
+            {% if user == question.author %}
+            <div id="question-edit" style="display: none;">
+                <form id="edit-question-form" method="post" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="edit_question" value="1">
+                    <div class="form__group">
+                        <label class="form__group-labelinput" for="edit-title">Заголовок</label>
+                        <input type="text" class="form-control" id="edit-title" name="title" value="{{ question.title }}" maxlength="255" required>
+                    </div>
+                    <div class="form__group">
+                        <label class="form__group-labelinput" for="edit-text">Текст вопроса</label>
+                        <textarea class="form-control" id="edit-text" name="text" rows="6" required>{{ question.text }}</textarea>
+                    </div>
+                    <div class="form__group">
+                        <label class="form__group-labelinput" for="edit-tags">Теги</label>
+                        <input type="text" class="form-control" id="edit-tags" name="tags" value="{% for tag in question.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}" maxlength="200">
+                    </div>
+                    <button type="submit" class="button button--primary">Сохранить</button>
+                    <button type="button" class="button button--secondary" data-action="cancel-question-edit">Отмена</button>
+                </form>
+            </div>
+            {% endif %}
+
             <div class="question-card__meta question-card__meta--detail">
                 <div class="question-card__left-meta">
                     <div class="question-card__tags">
@@ -34,6 +60,9 @@
                     {% if question.updated_at and question.updated_at != question.created_at %}
                         <span>Обновлено {{ question.updated_at }}</span>
                     {% endif %}
+                    {% if user == question.author %}
+                        <button type="button" class="question-card__edit-link" data-action="edit-question" style="background: none; border: none; color: inherit; cursor: pointer; text-decoration: underline;">Редактировать</button>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -50,9 +79,26 @@
                         <button class="question-card__vote-button question-card__vote-button--down">▼</button>
                     </div>
                     <div class="answer-card__main">
-                        <div class="answer-card__text">
+                        <div id="answer-view-{{ answer.id }}" class="answer-card__text">
                             {{ answer.text }}
                         </div>
+
+                        {% if user == answer.author %}
+                        <div id="answer-edit-{{ answer.id }}" style="display: none;">
+                            <form id="edit-answer-form-{{ answer.id }}" method="post" novalidate>
+                                {% csrf_token %}
+                                <input type="hidden" name="edit_answer" value="1">
+                                <input type="hidden" name="answer_id" value="{{ answer.id }}">
+                                <div class="form__group">
+                                    <label class="form__group-labelinput" for="edit-answer-text-{{ answer.id }}">Текст ответа</label>
+                                    <textarea class="form-control" id="edit-answer-text-{{ answer.id }}" name="text" rows="6" required>{{ answer.text }}</textarea>
+                                </div>
+                                <button type="submit" class="button button--primary">Сохранить</button>
+                                <button type="button" class="button button--secondary" data-action="cancel-answer-edit" data-answer-id="{{ answer.id }}">Отмена</button>
+                            </form>
+                        </div>
+                        {% endif %}
+
                         <div class="answer-card__meta">
                             {% if answer.author %}
                                 <span>Автор: <a href="{% url 'profile' answer.author.id %}" class="question-card__author">{{ answer.author }}</a></span>
@@ -63,6 +109,9 @@
                                 <span>Обновлено {{ answer.updated_at }}</span>
                             {% else %}
                                 <span>{{ answer.created_at }}</span>
+                            {% endif %}
+                            {% if user == answer.author %}
+                                <button type="button" class="question-card__edit-link" data-action="edit-answer" data-answer-id="{{ answer.id }}" style="background: none; border: none; color: inherit; cursor: pointer; text-decoration: underline;">Редактировать</button>
                             {% endif %}
                             <label class="answer-card__correct-label">
                                 <input type="checkbox" {% if answer.is_correct %}checked{% endif %}> Правильный ответ
@@ -85,6 +134,7 @@
         <h3>Ваш ответ</h3>
         <form id="answer-form" action="" method="post" novalidate>
             {% csrf_token %}
+            <input type="hidden" name="new_answer" value="1">
             {{ form.text }}
             <div class="form__invalid-feedback" id="answer-error"></div>
             <button type="submit" class="answer-form__button">Ответить</button>
