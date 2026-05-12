@@ -1,5 +1,5 @@
 from django import forms
-from .models import Question, Answer, Tag
+from questions.models import Question, Answer, Tag
 
 class AskForm(forms.ModelForm):
     tags = forms.CharField(

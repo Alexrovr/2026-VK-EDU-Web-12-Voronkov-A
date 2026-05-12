@@ -57,7 +57,7 @@
                 </div>
                 <div class="question-card__dates">
                     <span>Опубликовано {{ question.created_at }}</span>
-                    {% if question.updated_at and question.updated_at != question.created_at %}
+                    {% if question.was_updated %}
                         <span>Обновлено {{ question.updated_at }}</span>
                     {% endif %}
                     {% if user == question.author %}
@@ -105,7 +105,7 @@
                             {% else %}
                                 <span>Автор: <span class="question-card__deleted-author">Удален</span></span>
                             {% endif %}
-                            {% if answer.updated_at and answer.updated_at != answer.created_at %}
+                            {% if answer.was_updated %}
                                 <span>Обновлено {{ answer.updated_at }}</span>
                             {% else %}
                                 <span>{{ answer.created_at }}</span>

@@ -1,8 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from .forms import AskForm, AnswerForm
+from questions.forms import AskForm, AnswerForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Question, Tag, Answer
+from questions.models import Question, Tag, Answer
 
 
 def paginate(objects_list, request, per_page=10):

@@ -1,22 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .managers import QuestionManager
+from questions.managers import QuestionManager
 from django.utils import timezone
 
 class DefaultModel(models.Model):
-    now = timezone.now
-    created_at = models.DateTimeField(default=now, verbose_name='Дата создания')
-    updated_at = models.DateTimeField(default=now, verbose_name='Дата обновления', db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления', db_index=True)
     is_active = models.BooleanField(default=True, verbose_name='Активный')
 
-    def save(self, *args, **kwargs):
-        if self.pk is None:
-            now = timezone.now()
-            self.created_at = now
-            self.updated_at = now
-        else:
-            self.updated_at = timezone.now()
-        super().save(*args, **kwargs)
+    @property
+    def was_updated(self):
+        return (self.updated_at - self.created_at).total_seconds() > 1
 
     class Meta:
         abstract = True
@@ -33,7 +27,7 @@ class Tag(models.Model):
 
 class Question(DefaultModel):
     title = models.CharField(max_length=255, verbose_name='Заголовок')
-    text = models.TextField(verbose_name='Текст вопроса')
+    text = models.TextField(max_length=20000, verbose_name='Текст вопроса')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='questions', verbose_name='Автор')
     rating = models.IntegerField(default=0, verbose_name='Рейтинг', db_index=True)
     tags = models.ManyToManyField(Tag, related_name='questions', verbose_name='Теги')
@@ -48,7 +42,7 @@ class Question(DefaultModel):
         verbose_name_plural = 'Вопросы'
 
 class Answer(DefaultModel):
-    text = models.TextField(verbose_name='Текст ответа')
+    text = models.TextField(max_length=20000, verbose_name='Текст ответа')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Автор')
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers', verbose_name='Вопрос')
     rating = models.IntegerField(default=0, verbose_name='Рейтинг')

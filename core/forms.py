@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-from .models import Profile
+from core.models import Profile
 
 class LoginForm(forms.Form):
     username = forms.CharField()
@@ -13,13 +13,6 @@ class LoginForm(forms.Form):
         password = cleaned_data.get('password')
 
         user = authenticate(username=username, password=password)
-        if not user and username and '@' in username:
-            try:
-                email_user = User.objects.get(email__iexact=username)
-            except User.DoesNotExist:
-                email_user = None
-            if email_user:
-                user = authenticate(username=email_user.username, password=password)
 
         if not user:
             raise forms.ValidationError("Неверный логин или пароль")

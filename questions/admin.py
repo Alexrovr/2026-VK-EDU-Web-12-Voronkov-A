@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Question, Answer, Tag, QuestionLike, AnswerLike
+from questions.models import Question, Answer, Tag, QuestionLike, AnswerLike
 
 class QuestionLikeInline(admin.TabularInline):
     model = QuestionLike

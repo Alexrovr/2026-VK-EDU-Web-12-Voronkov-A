@@ -26,7 +26,7 @@
                 {% else %}
                     <span>Автор: <span class="question-card__deleted-author">Удален</span></span>
                 {% endif %}
-                {% if q.updated_at and q.updated_at != q.created_at %}
+                {% if q.was_updated %}
                     <span class="question-card__date">Обновлено {{ q.updated_at }}</span>
                 {% else %}
                     <span class="question-card__date">{{ q.created_at }}</span>
