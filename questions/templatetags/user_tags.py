@@ -5,7 +5,6 @@ register = template.Library()
 
 @register.filter
 def get_avatar(user):
-    # Проверяем, есть ли у пользователя связь с профилем
-    if hasattr(user, 'profile') and user.profile.avatar:
-        return user.profile.avatar.url
+    if hasattr(user, 'profile'):
+        return user.profile.get_avatar()
     return static('img/default-avatar.png')

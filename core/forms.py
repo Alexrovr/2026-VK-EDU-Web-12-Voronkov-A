@@ -15,7 +15,9 @@ class LoginForm(forms.Form):
         user = authenticate(username=username, password=password)
 
         if not user:
-            raise forms.ValidationError("Неверный логин или пароль")
+            raise forms.ValidationError({
+                "username": "Неверный логин или пароль"
+            })
         self.user_cache = user
         return cleaned_data
 

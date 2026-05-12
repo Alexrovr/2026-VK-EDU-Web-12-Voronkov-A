@@ -6,38 +6,37 @@ from django.contrib.auth.decorators import login_required
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.contrib.auth import update_session_auth_hash
 from core.forms import LoginForm, SignupForm, UserUpdateForm, ProfileUpdateForm
+from django.views.generic import FormView
+from django.urls import reverse_lazy
+from django.views.decorators.http import require_POST
 
-def login(request):
-    next_url = request.GET.get('next')
-    if request.method == 'POST':
-        form = LoginForm(request.POST)
-        if form.is_valid():
-            auth.login(request, form.user_cache)
-            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
-                return redirect(next_url)
-            return redirect('index')
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+class LoginView(FormView):
+    template_name = 'login.html'
+    form_class = LoginForm
 
-def signup(request):
-    if request.method == 'POST':
-        form = SignupForm(request.POST, request.FILES)
-        if form.is_valid():
-            user = form.save()
-            auth.login(request, user)
-            return redirect('index')
-    else:
-        form = SignupForm()
-    return render(request, 'signup.html', {'form': form})
+    def get_success_url(self):
+        next_url = self.request.GET.get('next')
+        if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={self.request.get_host()}):
+            return next_url
+        return reverse_lazy('index')
 
+    def form_valid(self, form):
+        auth.login(self.request, form.user_cache)
+        return super().form_valid(form)
+
+class SignupView(FormView):
+    template_name = 'signup.html'
+    form_class = SignupForm
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        user = form.save()
+        auth.login(self.request, user)
+        return super().form_valid(form)
+
+@require_POST
 def logout(request):
-    if request.method == 'POST':
-        auth.logout(request)
-        referer = request.META.get('HTTP_REFERER')
-        if referer and url_has_allowed_host_and_scheme(referer, allowed_hosts={request.get_host()}):
-            return redirect(referer)
-        return redirect('index')
+    auth.logout(request)
     return redirect('index')
 
 def profile(request, user_id):
