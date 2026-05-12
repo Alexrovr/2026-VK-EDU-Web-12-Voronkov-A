@@ -18,6 +18,7 @@ Thumbs.db
 
 node_modules/
 media/
+.media/
 dist/
 build/
 
