@@ -17,7 +17,7 @@ Thumbs.db
 *.temp
 
 node_modules/
-
+media/
 dist/
 build/
 
