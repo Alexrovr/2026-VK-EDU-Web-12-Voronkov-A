@@ -38,3 +38,13 @@ class AnswerForm(forms.ModelForm):
         widgets = {
             'text': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Напишите ответ...', 'class': 'answer-form__textarea', 'required': True}),
         }
+
+    def save(self, author=None, question=None, commit=True):
+        answer = super().save(commit=False)
+        if author:
+            answer.author = author
+        if question:
+            answer.question = question
+        if commit:
+            answer.save()
+        return answer

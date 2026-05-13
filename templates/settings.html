@@ -21,7 +21,7 @@
             </div>
             <div class="form__group">
                 <label class="form__group-labelinput" for="bio">О себе</label>
-                <textarea class="form-control" id="bio" name="bio" rows="3">{{ profile_form.bio.value|default:user.profile.bio }}</textarea>
+                <textarea class="form-control" id="bio" name="bio" rows="3">{{ profile_form.bio.value|default_if_none:user.profile.bio|default_if_none:"" }}</textarea>
             </div>
             <div class="form__group">
                 <label class="form__group-labelinput" for="password">Новый пароль</label>

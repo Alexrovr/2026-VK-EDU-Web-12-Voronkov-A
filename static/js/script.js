@@ -382,3 +382,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Функция для автоматической очистки ошибок при вводе текста
+function initLiveErrorCleanup() {
+    // Список всех форм, где нужно чистить ошибки
+    const forms = ['login-form', 'signup-form', 'answer-form', 'ask-form'];
+
+    forms.forEach(formId => {
+        const form = document.getElementById(formId);
+        if (form) {
+            form.addEventListener('input', function(e) {
+                const field = e.target;
+                // Ищем родительский контейнер поля
+                const group = field.closest('.form__group') || field.parentElement;
+
+                if (group) {
+                    // 1. Убираем красную рамку
+                    field.classList.remove('form-control--invalid');
+
+                    // 2. Скрываем все сообщения об ошибках в этом блоке
+                    const errorMessages = group.querySelectorAll('.form__invalid-feedback');
+                    errorMessages.forEach(error => {
+                        error.textContent = '';
+                        error.style.display = 'none';
+                    });
+                }
+            });
+        }
+    });
+}
+
+// Запускаем инициализацию после загрузки страницы
+document.addEventListener('DOMContentLoaded', initLiveErrorCleanup);

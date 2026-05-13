@@ -14,7 +14,7 @@
             {% endif %}
             <div class="form__group">
                 <label class="form__group-labelinput" for="username">Имя пользователя</label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Логин" required>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Логин" value="{{ form.username.value|default:'' }}" required>
                 <div class="form__invalid-feedback" id="username-error"></div>
             </div>
             <div class="form__group">

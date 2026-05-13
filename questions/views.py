@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 from questions.forms import AskForm, AnswerForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from questions.models import Question, Tag, Answer
+from django.urls import reverse, reverse_lazy
+from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 def paginate(objects_list, request, per_page=10):
@@ -51,10 +54,7 @@ def question_detail(request, question_id):
             return redirect('login')
         form = AnswerForm(request.POST)
         if form.is_valid():
-            answer = form.save(commit=False)
-            answer.author = request.user
-            answer.question = question
-            answer.save()
+            form.save(author=request.user, question=question)
             return redirect('question_detail', question_id=question_id)
     else:
         form = AnswerForm()
@@ -64,15 +64,10 @@ def question_detail(request, question_id):
 
     return render(request, 'question.html', {'question': question, 'answers': page, 'form': form})
 
-def ask(request):
-    form = AskForm(request.POST or None)
+class AskView(LoginRequiredMixin, FormView):
+    template_name = 'ask.html'
+    form_class = AskForm
 
-    if request.method == 'POST':
-        if not request.user.is_authenticated:
-            return redirect(f'/login/?next={request.path}')
-
-        if form.is_valid():
-            question = form.save(author=request.user)
-            return redirect('question_detail', question_id=question.id)
-
-    return render(request, 'ask.html', {'form': form})
+    def form_valid(self, form):
+        question = form.save(author=self.request.user)
+        return redirect(reverse('question_detail', kwargs={'question_id': question.id}))

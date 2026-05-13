@@ -136,7 +136,7 @@
             {% csrf_token %}
             <input type="hidden" name="new_answer" value="1">
             {{ form.text }}
-            <div class="form__invalid-feedback" id="answer-error"></div>
+            <div class="form__invalid-feedback" id="answer-error" style="margin-top: -20px; margin-bottom: 20px;"></div>
             <button type="submit" class="answer-form__button">Ответить</button>
         </form>
     </div>
