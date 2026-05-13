@@ -6,6 +6,10 @@ from questions.models import Question, Tag, Answer
 from django.urls import reverse, reverse_lazy
 from django.views.generic.edit import FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
+from django.views.generic import DetailView
+from questions.serializers import QuestionSerializer, AnswerSerializer
 
 
 def paginate(objects_list, request, per_page=10):
@@ -29,40 +33,54 @@ def tag(request, tag_name):
     page = paginate(questions, request, 20)
     return render(request, 'tag.html', {'questions': page, 'tag': tag})
 
-def question_detail(request, question_id):
-    question = get_object_or_404(Question.objects.select_related('author', 'author__profile').prefetch_related('tags'), pk=question_id)
 
-    if request.method == 'POST' and 'edit_question' in request.POST:
-        if request.user == question.author:
-            form = AskForm(request.POST, instance=question)
-            if form.is_valid():
-                form.save(commit=False)
-                question.save()
-        return redirect('question_detail', question_id=question_id)
+class QuestionDetailView(DetailView):
+    model = Question
+    template_name = 'question.html'
+    context_object_name = 'question'
+    pk_url_kwarg = 'question_id'
 
-    if request.method == 'POST' and 'edit_answer' in request.POST:
-        answer_id = request.POST.get('answer_id')
-        answer = get_object_or_404(Answer, pk=answer_id)
-        if request.user == answer.author:
-            form = AnswerForm(request.POST, instance=answer)
-            if form.is_valid():
-                form.save()
-        return redirect('question_detail', question_id=question_id)
+    def get_queryset(self):
+        return super().get_queryset().select_related('author__profile').prefetch_related('tags')
 
-    if request.method == 'POST' and 'new_answer' in request.POST:
-        if not request.user.is_authenticated:
-            return redirect('login')
-        form = AnswerForm(request.POST)
-        if form.is_valid():
-            form.save(author=request.user, question=question)
-            return redirect('question_detail', question_id=question_id)
-    else:
-        form = AnswerForm()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        answers_qs = Answer.objects.filter(is_active=True, question=self.object)\
+            .select_related('author__profile')\
+            .order_by('-updated_at')
 
-    answers = question.answers.select_related('author', 'author__profile').filter(is_active=True).order_by('-updated_at')
-    page = paginate(answers, request, 30)
+        paginator = Paginator(answers_qs, 30)
+        page_number = self.request.GET.get('page')
+        context['answers'] = paginator.get_page(page_number)
+        context['answer_form'] = AnswerForm()
+        return context
 
-    return render(request, 'question.html', {'question': question, 'answers': page, 'form': form})
+class AnswerCreateAPI(CreateAPIView):
+    serializer_class = AnswerSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        question = get_object_or_404(Question, pk=self.kwargs['question_id'])
+        serializer.save(author=self.request.user, question=question)
+
+class QuestionUpdateAPI(UpdateAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_url_kwarg = 'question_id'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(author=self.request.user)
+
+class AnswerUpdateAPI(UpdateAPIView):
+    queryset = Answer.objects.all()
+    serializer_class = AnswerSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_url_kwarg = 'answer_id'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(author=self.request.user)
+
 
 class AskView(LoginRequiredMixin, FormView):
     template_name = 'ask.html'

@@ -19,22 +19,25 @@
 
             {% if user == question.author %}
             <div id="question-edit" style="display: none;">
-                <form id="edit-question-form" method="post" novalidate>
+                <form id="edit-question-form" novalidate>
                     {% csrf_token %}
-                    <input type="hidden" name="edit_question" value="1">
+                    <!-- <input type="hidden" name="edit_question" value="1"> -->
                     <div class="form__group">
                         <label class="form__group-labelinput" for="edit-title">Заголовок</label>
                         <input type="text" class="form-control" id="edit-title" name="title" value="{{ question.title }}" maxlength="255" required>
+                        <div class="form__invalid-feedback" id="title-error"></div>
                     </div>
                     <div class="form__group">
                         <label class="form__group-labelinput" for="edit-text">Текст вопроса</label>
                         <textarea class="form-control" id="edit-text" name="text" rows="6" required>{{ question.text }}</textarea>
+                        <div class="form__invalid-feedback" id="text-error"></div>
                     </div>
                     <div class="form__group">
                         <label class="form__group-labelinput" for="edit-tags">Теги</label>
                         <input type="text" class="form-control" id="edit-tags" name="tags" value="{% for tag in question.tags.all %}{{ tag }}{% if not forloop.last %}, {% endif %}{% endfor %}" maxlength="200">
                     </div>
-                    <button type="submit" class="button button--primary">Сохранить</button>
+                    <button type="submit" class="button button--primary"
+                        data-url="{% url 'api_question_edit' question.id %}">Сохранить</button>
                     <button type="button" class="button button--secondary" data-action="cancel-question-edit">Отмена</button>
                 </form>
             </div>
@@ -85,15 +88,18 @@
 
                         {% if user == answer.author %}
                         <div id="answer-edit-{{ answer.id }}" style="display: none;">
-                            <form id="edit-answer-form-{{ answer.id }}" method="post" novalidate>
+                            <form id="edit-answer-form-{{ answer.id }}" novalidate class="edit-answer-form">
                                 {% csrf_token %}
-                                <input type="hidden" name="edit_answer" value="1">
-                                <input type="hidden" name="answer_id" value="{{ answer.id }}">
+                                <!-- <input type="hidden" name="edit_answer" value="1"> -->
+                                <!-- <input type="hidden" name="answer_id" value="{{ answer.id }}"> -->
                                 <div class="form__group">
                                     <label class="form__group-labelinput" for="edit-answer-text-{{ answer.id }}">Текст ответа</label>
                                     <textarea class="form-control" id="edit-answer-text-{{ answer.id }}" name="text" rows="6" required>{{ answer.text }}</textarea>
+                                    <div class="form__invalid-feedback" id="answer-edit-error-{{ answer.id }}"></div>
                                 </div>
-                                <button type="submit" class="button button--primary">Сохранить</button>
+                                <button type="submit" class="button button--primary"
+                                    data-url="{% url 'api_answer_edit' answer.id %}"
+                                    data-answer-id="{{ answer.id }}">Сохранить</button>
                                 <button type="button" class="button button--secondary" data-action="cancel-answer-edit" data-answer-id="{{ answer.id }}">Отмена</button>
                             </form>
                         </div>
@@ -132,12 +138,15 @@
     {% if user.is_authenticated %}
     <div class="answer-form">
         <h3>Ваш ответ</h3>
-        <form id="answer-form" action="" method="post" novalidate>
+        <form id="answer-form" novalidate>
             {% csrf_token %}
-            <input type="hidden" name="new_answer" value="1">
-            {{ form.text }}
-            <div class="form__invalid-feedback" id="answer-error" style="margin-top: -20px; margin-bottom: 20px;"></div>
-            <button type="submit" class="answer-form__button">Ответить</button>
+            <!-- <input type="hidden" name="new_answer" value="1"> -->
+             <div class="form__group">
+                {{ answer_form.text }}
+                <div class="form__invalid-feedback" id="answer-error" style="margin-top: -20px; margin-bottom: 20px;"></div>
+            </div>
+            <button type="submit" class="answer-form__button"
+                data-url="{% url 'api_answer_create' question.id %}">Ответить</button>
         </form>
     </div>
     {% else %}

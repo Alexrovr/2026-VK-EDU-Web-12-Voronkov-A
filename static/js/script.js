@@ -383,9 +383,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Функция для автоматической очистки ошибок при вводе текста
 function initLiveErrorCleanup() {
-    // Список всех форм, где нужно чистить ошибки
     const forms = ['login-form', 'signup-form', 'answer-form', 'ask-form'];
 
     forms.forEach(formId => {
@@ -393,14 +391,11 @@ function initLiveErrorCleanup() {
         if (form) {
             form.addEventListener('input', function(e) {
                 const field = e.target;
-                // Ищем родительский контейнер поля
                 const group = field.closest('.form__group') || field.parentElement;
 
                 if (group) {
-                    // 1. Убираем красную рамку
                     field.classList.remove('form-control--invalid');
 
-                    // 2. Скрываем все сообщения об ошибках в этом блоке
                     const errorMessages = group.querySelectorAll('.form__invalid-feedback');
                     errorMessages.forEach(error => {
                         error.textContent = '';
@@ -412,5 +407,154 @@ function initLiveErrorCleanup() {
     });
 }
 
-// Запускаем инициализацию после загрузки страницы
 document.addEventListener('DOMContentLoaded', initLiveErrorCleanup);
+
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+async function sendApiRequest(url, method, data) {
+    const response = await fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify(data)
+    });
+
+    if (response.status === 204) return {};
+    return response;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    const answerForm = document.getElementById('answer-form');
+
+    if (answerForm) {
+        answerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const btn = e.submitter;
+            const url = btn.dataset.url;
+            const textField = document.getElementById('id_text');
+            const errorEl = document.getElementById('answer-error');
+
+            errorEl.textContent = '';
+            errorEl.style.display = 'none';
+            textField.classList.remove('form-control--invalid');
+
+            const val = textField.value.trim();
+            if (!val) {
+                textField.classList.add('form-control--invalid');
+                errorEl.textContent = "Ответ не может быть пустым";
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({ text: val })
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    const data = await response.json();
+                    textField.classList.add('form-control--invalid');
+                    errorEl.textContent = data.text || "Ошибка при сохранении";
+                    errorEl.style.display = 'block';
+                }
+            } catch (error) {
+                errorEl.textContent = "Ошибка соединения с сервером";
+                errorEl.style.display = 'block';
+            }
+        });
+    }
+
+    const editQuestionForm = document.getElementById('edit-question-form');
+
+    if (editQuestionForm) {
+        editQuestionForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const btn = e.submitter;
+
+            const titleField = document.getElementById('edit-title');
+            const textField = document.getElementById('edit-text');
+            const titleError = document.getElementById('title-error');
+            const textError = document.getElementById('text-error');
+
+            [titleError, textError].forEach(el => { if(el) { el.textContent = ''; el.style.display = 'none'; }});
+            [titleField, textField].forEach(f => f.classList.remove('form-control--invalid'));
+
+            let isValid = true;
+
+            if (titleField.value.trim().length < 5) {
+                titleField.classList.add('form-control--invalid');
+                titleError.textContent = "Заголовок должен содержать минимум 5 символов";
+                titleError.style.display = 'block';
+                isValid = false;
+            }
+
+            if (textField.value.trim().length < 10) {
+                textField.classList.add('form-control--invalid');
+                textError.textContent = "Текст вопроса должен содержать минимум 10 символов";
+                textError.style.display = 'block';
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            const response = await sendApiRequest(btn.dataset.url, 'PATCH', {
+                title: titleField.value,
+                text: textField.value
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                const data = await response.json();
+                alert('Ошибка при сохранении: ' + JSON.stringify(data));
+            }
+        });
+    }
+
+    document.addEventListener('submit', async function(e) {
+        if (e.target.classList.contains('edit-answer-form')) {
+            e.preventDefault();
+            const form = e.target;
+            const btn = e.submitter;
+            const answerId = btn.dataset.answerId;
+            const textArea = form.querySelector('textarea');
+
+            const response = await sendApiRequest(btn.dataset.url, 'PATCH', {
+                text: textArea.value
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                const errorEl = document.getElementById(`answer-edit-error-${answerId}`);
+                errorEl.textContent = 'Ответ не может быть пустым';
+                errorEl.style.display = 'block';
+            }
+        }
+    });
+});
