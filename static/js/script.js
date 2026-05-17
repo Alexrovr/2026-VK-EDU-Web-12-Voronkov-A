@@ -1,24 +1,19 @@
 const loginForm = document.getElementById('login-form');
 
 if (loginForm) {
-    function isValidEmail(email) {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        return emailRegex.test(email);
-    }
-
     function clearLoginErrors() {
-        const emailError = document.getElementById('email-error');
+        const usernameError = document.getElementById('username-error');
         const passwordError = document.getElementById('password-error');
-        const emailField = document.getElementById('email');
+        const usernameField = document.getElementById('username');
         const passwordField = document.getElementById('password');
 
-        [emailError, passwordError].forEach(el => {
+        [usernameError, passwordError].forEach(el => {
             if (el) {
                 el.textContent = '';
                 el.style.display = 'none';
             }
         });
-        [emailField, passwordField].forEach(field => {
+        [usernameField, passwordField].forEach(field => {
             if (field) field.classList.remove('form-control--invalid');
         });
     }
@@ -37,14 +32,11 @@ if (loginForm) {
         clearLoginErrors();
         let isValid = true;
 
-        const email = document.getElementById('email');
+        const username = document.getElementById('username');
         const password = document.getElementById('password');
 
-        if (!email.value.trim()) {
-            showLoginError('email', 'Это поле обязательно для заполнения');
-            isValid = false;
-        } else if (!isValidEmail(email.value.trim())) {
-            showLoginError('email', 'Пожалуйста, введите корректный email адрес');
+        if (!username.value.trim()) {
+            showLoginError('username', 'Это поле обязательно для заполнения');
             isValid = false;
         }
 
@@ -277,62 +269,253 @@ if (askForm) {
     });
 }
 
-const answerForm = document.getElementById('answer-form');
+function toggleQuestionEdit() {
+    const view = document.getElementById('question-view');
+    const edit = document.getElementById('question-edit');
+    if (view && edit) {
+        view.style.display = view.style.display === 'none' ? 'block' : 'none';
+        edit.style.display = edit.style.display === 'none' ? 'block' : 'none';
+    }
+}
 
-if (answerForm) {
-    function clearAnswerErrors() {
-        const errorEl = document.getElementById('answer-error');
-        const field = document.getElementById('answer');
-        if (errorEl) {
-            errorEl.textContent = '';
-            errorEl.style.display = 'none';
-        }
-        if (field) field.classList.remove('form-control--invalid');
+function toggleAnswerEdit(answerId) {
+    const view = document.getElementById(`answer-view-${answerId}`);
+    const edit = document.getElementById(`answer-edit-${answerId}`);
+    if (view && edit) {
+        view.style.display = view.style.display === 'none' ? 'block' : 'none';
+        edit.style.display = edit.style.display === 'none' ? 'block' : 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const editQuestionBtn = document.querySelector('[data-action="edit-question"]');
+    if (editQuestionBtn) {
+        editQuestionBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleQuestionEdit();
+        });
     }
 
-    function showAnswerError(fieldName, message) {
-        const errorEl = document.getElementById(`${fieldName}-error`);
-        const field = document.getElementById(fieldName);
-        if (errorEl) {
-            errorEl.textContent = message;
-            errorEl.style.display = 'block';
-        }
-        if (field) field.classList.add('form-control--invalid');
-    }
-
-    function validateAnswerForm() {
-        clearAnswerErrors();
-        let isValid = true;
-
-        const answer = document.getElementById('answer');
-
-        if (!answer.value.trim()) {
-            showAnswerError('answer', 'Ответ не может быть пустым');
-            isValid = false;
-        } else if (answer.value.trim().length < 5) {
-            showAnswerError('answer', 'Ответ должен содержать минимум 5 символов');
-            isValid = false;
-        }
-
-        return isValid;
-    }
-
-    answerForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        if (validateAnswerForm()) {
-            answerForm.submit();
-        }
+    const editAnswerBtns = document.querySelectorAll('[data-action="edit-answer"]');
+    editAnswerBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const answerId = this.getAttribute('data-answer-id');
+            toggleAnswerEdit(answerId);
+        });
     });
 
-    const answerField = document.getElementById('answer');
-    if (answerField) {
-        answerField.addEventListener('focus', function() {
+    const cancelQuestionBtns = document.querySelectorAll('[data-action="cancel-question-edit"]');
+    cancelQuestionBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleQuestionEdit();
+        });
+    });
+
+    const cancelAnswerBtns = document.querySelectorAll('[data-action="cancel-answer-edit"]');
+    cancelAnswerBtns.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const answerId = this.getAttribute('data-answer-id');
+            toggleAnswerEdit(answerId);
+        });
+    });
+});
+
+function initLiveErrorCleanup() {
+    const forms = ['login-form', 'signup-form', 'answer-form', 'ask-form'];
+
+    forms.forEach(formId => {
+        const form = document.getElementById(formId);
+        if (form) {
+            form.addEventListener('input', function(e) {
+                const field = e.target;
+                const group = field.closest('.form__group') || field.parentElement;
+
+                if (group) {
+                    field.classList.remove('form-control--invalid');
+
+                    const errorMessages = group.querySelectorAll('.form__invalid-feedback');
+                    errorMessages.forEach(error => {
+                        error.textContent = '';
+                        error.style.display = 'none';
+                    });
+                }
+            });
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', initLiveErrorCleanup);
+
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+async function sendApiRequest(url, method, data) {
+    const response = await fetch(url, {
+        method: method,
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify(data)
+    });
+
+    if (response.status === 204) return {};
+    return response;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+
+    const answerForm = document.getElementById('answer-form');
+
+    if (answerForm) {
+        answerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const url = form.action;
+            const method = form.method || 'POST';
+            const textField = document.getElementById('id_text');
             const errorEl = document.getElementById('answer-error');
-            if (errorEl) {
-                errorEl.textContent = '';
-                errorEl.style.display = 'none';
-                answerField.classList.remove('form-control--invalid');
+
+            errorEl.textContent = '';
+            errorEl.style.display = 'none';
+            textField.classList.remove('form-control--invalid');
+
+            const val = textField.value.trim();
+            if (!val) {
+                textField.classList.add('form-control--invalid');
+                errorEl.textContent = "Ответ не может быть пустым";
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({ text: val })
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    const data = await response.json();
+                    textField.classList.add('form-control--invalid');
+                    errorEl.textContent = data.text || "Ошибка при сохранении";
+                    errorEl.style.display = 'block';
+                }
+            } catch (error) {
+                errorEl.textContent = "Ошибка соединения с сервером";
+                errorEl.style.display = 'block';
             }
         });
     }
-}
+
+    const editQuestionForm = document.getElementById('edit-question-form');
+
+    if (editQuestionForm) {
+        editQuestionForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const form = e.target;
+            const url = form.action;
+            const method = 'PATCH';
+
+            const titleField = document.getElementById('edit-title');
+            const textField = document.getElementById('edit-text');
+            const titleError = document.getElementById('title-error');
+            const textError = document.getElementById('text-error');
+
+            [titleError, textError].forEach(el => { if(el) { el.textContent = ''; el.style.display = 'none'; }});
+            [titleField, textField].forEach(f => f.classList.remove('form-control--invalid'));
+
+            let isValid = true;
+
+            if (titleField.value.trim().length < 5) {
+                titleField.classList.add('form-control--invalid');
+                titleError.textContent = "Заголовок должен содержать минимум 5 символов";
+                titleError.style.display = 'block';
+                isValid = false;
+            }
+
+            if (textField.value.trim().length < 10) {
+                textField.classList.add('form-control--invalid');
+                textError.textContent = "Текст вопроса должен содержать минимум 10 символов";
+                textError.style.display = 'block';
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({
+                    title: titleField.value,
+                    text: textField.value
+                })
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                const data = await response.json();
+                alert('Ошибка при сохранении: ' + JSON.stringify(data));
+            }
+        });
+    }
+
+    document.addEventListener('submit', async function(e) {
+        if (e.target.classList.contains('edit-answer-form')) {
+            e.preventDefault();
+            const form = e.target;
+            const url = form.action;
+            const method = 'PATCH';
+            const textArea = form.querySelector('textarea');
+
+            const answerId = form.dataset.answerId;
+
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({
+                    text: textArea.value
+                })
+            });
+
+            if (response.ok) {
+                window.location.reload();
+            } else {
+                const errorEl = document.getElementById(`answer-edit-error-${answerId}`);
+                if (errorEl) {
+                    errorEl.textContent = 'Ответ не может быть пустым';
+                    errorEl.style.display = 'block';
+                }
+            }
+        }
+    });
+});

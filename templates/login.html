@@ -4,17 +4,31 @@
 {% block content %}
     <div class="form-container">
         <h2>Вход</h2>
-        <form id="login-form" action="#" method="post" novalidate>
+        <form id="login-form" action="{% url 'login' %}" method="post" novalidate>
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form__alert--danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
             <div class="form__group">
-                <label class="form__group-labelinput" for="email">Email</label>
-                <input type="email" class="form-control" id="email" name="email" placeholder="example@mail.ru" required>
-                <div class="form__invalid-feedback" id="email-error"></div>
+                <label class="form__group-labelinput" for="username">Имя пользователя</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Логин" value="{{ form.username.value|default:'' }}" required>
+                <div class="form__invalid-feedback" id="username-error"></div>
             </div>
             <div class="form__group">
                 <label class="form__group-labelinput" for="password">Пароль</label>
                 <input type="password" class="form-control" id="password" name="password" required>
                 <div class="form__invalid-feedback" id="password-error"></div>
             </div>
+            {% if form.username.errors %}
+                <div class="form__invalid-feedback">
+                    {% for error in form.username.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </div>
+            {% endif %}
             <button type="submit" class="button button--primary button--block">Войти</button>
             <div class="form__footer">
                 Нет аккаунта? <a href="{% url 'signup' %}">Зарегистрируйтесь</a>

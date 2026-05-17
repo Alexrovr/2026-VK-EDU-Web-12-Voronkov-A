@@ -698,6 +698,15 @@ textarea.form-control {
     width: 100%;
 }
 
+.login-link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
 .form__footer {
     margin-top: 1.5rem;
     text-align: center;

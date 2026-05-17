@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.db.models import Sum
-from .models import QuestionLike, AnswerLike
+from questions.models import QuestionLike, AnswerLike
 
 @receiver([post_save, post_delete], sender=QuestionLike)
 def update_question_rating(sender, instance, **kwargs):

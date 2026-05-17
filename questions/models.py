@@ -1,13 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .managers import QuestionManager
+from questions.managers import QuestionManager
 from django.utils import timezone
+from django.db.models import Q
 
 class DefaultModel(models.Model):
-    now = timezone.now
-    created_at = models.DateTimeField(default=now, verbose_name='Дата создания')
-    updated_at = models.DateTimeField(default=now, verbose_name='Дата обновления')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
+    updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления', db_index=True)
     is_active = models.BooleanField(default=True, verbose_name='Активный')
+    is_edited = models.BooleanField(default=False, verbose_name='Отредактировано')
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            self.is_edited = True
+        super().save(*args, **kwargs)
 
     class Meta:
         abstract = True
@@ -24,9 +30,9 @@ class Tag(models.Model):
 
 class Question(DefaultModel):
     title = models.CharField(max_length=255, verbose_name='Заголовок')
-    text = models.TextField(verbose_name='Текст вопроса')
+    text = models.TextField(max_length=20000, verbose_name='Текст вопроса')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='questions', verbose_name='Автор')
-    rating = models.IntegerField(default=0, verbose_name='Рейтинг')
+    rating = models.IntegerField(default=0, verbose_name='Рейтинг', db_index=True)
     tags = models.ManyToManyField(Tag, related_name='questions', verbose_name='Теги')
 
     objects = QuestionManager()
@@ -38,8 +44,16 @@ class Question(DefaultModel):
         verbose_name = 'Вопрос'
         verbose_name_plural = 'Вопросы'
 
+        indexes = [
+            models.Index(
+                fields=["id"],
+                name="question_active_idx",
+                condition=Q(is_active=True),
+            ),
+        ]
+
 class Answer(DefaultModel):
-    text = models.TextField(verbose_name='Текст ответа')
+    text = models.TextField(max_length=20000, verbose_name='Текст ответа')
     author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='Автор')
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers', verbose_name='Вопрос')
     rating = models.IntegerField(default=0, verbose_name='Рейтинг')

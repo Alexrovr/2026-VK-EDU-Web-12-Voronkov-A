@@ -1,6 +1,16 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from questions.forms import AskForm, AnswerForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .models import Question, Tag
+from questions.models import Question, Tag, Answer
+from django.urls import reverse, reverse_lazy
+from django.views.generic.edit import FormView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
+from django.views.generic import DetailView
+from questions.serializers import QuestionSerializer, AnswerSerializer
+from questions.permissions import IsAuthor
 
 
 def paginate(objects_list, request, per_page=10):
@@ -24,11 +34,59 @@ def tag(request, tag_name):
     page = paginate(questions, request, 20)
     return render(request, 'tag.html', {'questions': page, 'tag': tag})
 
-def question_detail(request, question_id):
-    question = get_object_or_404(Question.objects.select_related('author', 'author__profile').prefetch_related('tags'), pk=question_id)
-    answers = question.answers.select_related('author', 'author__profile').filter(is_active=True).order_by('-updated_at')
-    page = paginate(answers, request, 30)
-    return render(request, 'question.html', {'question': question, 'answers': page})
 
-def ask(request):
-    return render(request, 'ask.html')
+class QuestionDetailView(DetailView):
+    model = Question
+    template_name = 'question.html'
+    context_object_name = 'question'
+    pk_url_kwarg = 'question_id'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True).select_related('author__profile').prefetch_related('tags')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        answers_qs = Answer.objects.filter(is_active=True, question=self.object)\
+            .select_related('author__profile')\
+            .order_by('-updated_at')
+
+        paginator = Paginator(answers_qs, 30)
+        page_number = self.request.GET.get('page')
+        context['answers'] = paginator.get_page(page_number)
+        context['answer_form'] = AnswerForm()
+        return context
+
+class AnswerCreateAPI(CreateAPIView):
+    serializer_class = AnswerSerializer
+    permission_classes = [IsAuthenticated]
+
+    def perform_create(self, serializer):
+        question = get_object_or_404(Question, pk=self.kwargs['question_id'], is_active=True)
+        serializer.save(author=self.request.user, question=question)
+
+class QuestionUpdateAPI(UpdateAPIView):
+    queryset = Question.objects.all()
+    serializer_class = QuestionSerializer
+    permission_classes = [IsAuthenticated, IsAuthor]
+    lookup_url_kwarg = 'question_id'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
+class AnswerUpdateAPI(UpdateAPIView):
+    queryset = Answer.objects.all()
+    serializer_class = AnswerSerializer
+    permission_classes = [IsAuthenticated, IsAuthor]
+    lookup_url_kwarg = 'answer_id'
+
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)
+
+
+class AskView(LoginRequiredMixin, FormView):
+    template_name = 'ask.html'
+    form_class = AskForm
+
+    def form_valid(self, form):
+        question = form.save(author=self.request.user)
+        return redirect(reverse('question_detail', kwargs={'question_id': question.id}))

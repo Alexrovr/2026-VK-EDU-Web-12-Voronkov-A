@@ -6,7 +6,7 @@
         <h2>Профиль</h2>
         {% if user %}
             <div class="form__group text--center">
-                <img src="{{ user_profile.profile.get_avatar_url }}" alt="Avatar" class="avatar--large">
+                <img src="{{ user_profile.profile.get_avatar }}" alt="Avatar" class="avatar--large">
             </div>
             <div class="form__group">
                 <label class="form__group-labelinput">Имя пользователя</label>

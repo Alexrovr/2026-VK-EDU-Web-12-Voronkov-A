@@ -1,4 +1,5 @@
 from django.db import models
+from django.templatetags.static import static
 from django.contrib.auth.models import User
 
 class Profile(models.Model):
@@ -6,11 +7,10 @@ class Profile(models.Model):
     avatar = models.ImageField(upload_to='avatars/%Y/%m/%d/', null=True, blank=True, verbose_name='Аватар')
     bio = models.TextField(max_length=500, null=True, blank=True, verbose_name='О себе')
 
-    @property
-    def get_avatar_url(self):
-        if self.avatar and hasattr(self.avatar, 'url'):
+    def get_avatar(self):
+        if self.avatar:
             return self.avatar.url
-        return '/static/img/default-avatar.png'
+        return static('img/default-avatar.png')
 
     class Meta:
         verbose_name = 'Профиль'
