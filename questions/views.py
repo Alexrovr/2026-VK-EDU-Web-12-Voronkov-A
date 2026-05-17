@@ -10,6 +10,7 @@ from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.permissions import IsAuthenticated
 from django.views.generic import DetailView
 from questions.serializers import QuestionSerializer, AnswerSerializer
+from questions.permissions import IsAuthor
 
 
 def paginate(objects_list, request, per_page=10):
@@ -41,7 +42,7 @@ class QuestionDetailView(DetailView):
     pk_url_kwarg = 'question_id'
 
     def get_queryset(self):
-        return super().get_queryset().select_related('author__profile').prefetch_related('tags')
+        return super().get_queryset().filter(is_active=True).select_related('author__profile').prefetch_related('tags')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,26 +61,26 @@ class AnswerCreateAPI(CreateAPIView):
     permission_classes = [IsAuthenticated]
 
     def perform_create(self, serializer):
-        question = get_object_or_404(Question, pk=self.kwargs['question_id'])
+        question = get_object_or_404(Question, pk=self.kwargs['question_id'], is_active=True)
         serializer.save(author=self.request.user, question=question)
 
 class QuestionUpdateAPI(UpdateAPIView):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAuthor]
     lookup_url_kwarg = 'question_id'
 
     def get_queryset(self):
-        return super().get_queryset().filter(author=self.request.user)
+        return super().get_queryset().filter(is_active=True)
 
 class AnswerUpdateAPI(UpdateAPIView):
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsAuthor]
     lookup_url_kwarg = 'answer_id'
 
     def get_queryset(self):
-        return super().get_queryset().filter(author=self.request.user)
+        return super().get_queryset().filter(is_active=True)
 
 
 class AskView(LoginRequiredMixin, FormView):

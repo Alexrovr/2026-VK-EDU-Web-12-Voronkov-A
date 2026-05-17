@@ -2,15 +2,18 @@ from django.db import models
 from django.contrib.auth.models import User
 from questions.managers import QuestionManager
 from django.utils import timezone
+from django.db.models import Q
 
 class DefaultModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата обновления', db_index=True)
     is_active = models.BooleanField(default=True, verbose_name='Активный')
+    is_edited = models.BooleanField(default=False, verbose_name='Отредактировано')
 
-    @property
-    def was_updated(self):
-        return (self.updated_at - self.created_at).total_seconds() > 1
+    def save(self, *args, **kwargs):
+        if self.pk:
+            self.is_edited = True
+        super().save(*args, **kwargs)
 
     class Meta:
         abstract = True
@@ -40,6 +43,14 @@ class Question(DefaultModel):
     class Meta:
         verbose_name = 'Вопрос'
         verbose_name_plural = 'Вопросы'
+
+        indexes = [
+            models.Index(
+                fields=["id"],
+                name="question_active_idx",
+                condition=Q(is_active=True),
+            ),
+        ]
 
 class Answer(DefaultModel):
     text = models.TextField(max_length=20000, verbose_name='Текст ответа')
